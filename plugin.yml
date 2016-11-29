@@ -1,0 +1,8 @@
+#General Data
+name: TNELib
+version: 0.0.1.0
+description: Some common classes used for all TNERevival Projects
+author: creatorfromhell
+
+#Plugin Data
+main: com.github.tnerevival.TNELib
