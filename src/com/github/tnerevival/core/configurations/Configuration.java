@@ -12,6 +12,8 @@ public abstract class Configuration {
 
   public abstract FileConfiguration getConfiguration();
 
+  public abstract String node();
+
   public static HashMap<String, Object> configurations = new HashMap<>();
 
   public void load(FileConfiguration configurationFile) {

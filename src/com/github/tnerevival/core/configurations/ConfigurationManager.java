@@ -1,12 +1,36 @@
+/*
+ * The New Economy Minecraft Server Plugin
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.github.tnerevival.core.configurations;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+/**
+ * Created by creatorfromhell on 1/5/2017.
+ **/
 public class ConfigurationManager {
 
   public boolean save = false;
+  public List<String> loaded = new ArrayList<>();
+  public List<String> changed = new ArrayList<>();
 
   public HashMap<String, Configuration> configurations = new HashMap<>();
 
@@ -14,7 +38,24 @@ public class ConfigurationManager {
     loadAll();
   }
 
+  public void add(Configuration configuration, String identifier) {
+    configurations.put(identifier, configuration);
+  }
+
   public void loadAll() {
+    for(Map.Entry<String, Configuration> entries : configurations.entrySet()) {
+      entries.getValue().load(entries.getValue().getConfiguration());
+      loaded.add(entries.getKey());
+    }
+  }
+
+  public void updateLoad() {
+    for(Map.Entry<String, Configuration> entries : configurations.entrySet()) {
+      if(!loaded.contains(entries.getKey())) {
+        entries.getValue().load(entries.getValue().getConfiguration());
+        loaded.add(entries.getKey());
+      }
+    }
   }
 
   private FileConfiguration getFileConfiguration(String id) {
@@ -93,30 +134,48 @@ public class ConfigurationManager {
     String[] exploded = configuration.split("\\.");
     String path = configuration;
     String prefix = "Core";
-    if(ConfigurationType.fromPrefix(exploded[0]) != ConfigurationType.UNKNOWN) {
+    if(containsPrefix(exploded[0])) {
       prefix = exploded[0];
-      if(ConfigurationType.fromPrefix(prefix) == ConfigurationType.MAIN) {
+      if(fromPrefix(prefix).equalsIgnoreCase("main")) {
         path = path.replace(prefix + ".", "");
       }
     }
-    return getValue(configuration, ConfigurationType.fromPrefix(prefix).getIdentifier());
+    return getValue(configuration, fromPrefix(prefix));
   }
 
   public void setConfiguration(String configuration, Object value) {
     String[] exploded = configuration.split("\\.");
     String prefix = "Core";
-    if(ConfigurationType.fromPrefix(exploded[0]) != ConfigurationType.UNKNOWN) {
+    if(containsPrefix(exploded[0])) {
       prefix = exploded[0];
     }
-    setValue(configuration, ConfigurationType.fromPrefix(prefix).getIdentifier(), value);
+    setValue(configuration, fromPrefix(prefix), value);
   }
 
   public Boolean hasConfiguration(String configuration) {
     String[] exploded = configuration.split("\\.");
     String prefix = "Core";
-    if(ConfigurationType.fromPrefix(exploded[0]) != ConfigurationType.UNKNOWN) {
+    if(containsPrefix(exploded[0])) {
       prefix = exploded[0];
     }
-    return hasNode(configuration, ConfigurationType.fromPrefix(prefix).getIdentifier());
+    return hasNode(configuration, fromPrefix(prefix));
+  }
+
+  public Boolean containsPrefix(String prefix) {
+    for(Configuration c : configurations.values()) {
+      if(c.node().equals(prefix)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public String fromPrefix(String prefix) {
+    for(Map.Entry<String, Configuration> entry : configurations.entrySet()) {
+      if(entry.getValue().node().equals(prefix)) {
+        return entry.getKey();
+      }
+    }
+    return "main";
   }
 }

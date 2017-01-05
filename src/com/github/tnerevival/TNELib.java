@@ -54,16 +54,12 @@ public class TNELib extends JavaPlugin {
   public void onEnable() {
     instance = this;
 
-    //Configurations
-    initializeConfigurations();
-    loadConfigurations();
-
     api = new TNEAPI(this);
-
-    defaultWorld = Bukkit.getServer().getWorlds().get(0).getName();
 
     configurations = new ConfigurationManager();
     commandManager = new CommandManager();
+
+    defaultWorld = Bukkit.getServer().getWorlds().get(0).getName();
   }
 
   @Override
