@@ -28,7 +28,7 @@ public abstract class Configuration {
   }
 
   public void save(FileConfiguration configurationFile) {
-    if(!new File(TNELib.instance.getDataFolder(), configurationFile.getName()).exists() || TNELib.instance.modified.contains(configurationFile.getName())) {
+    if(!new File(TNELib.instance.getDataFolder(), configurationFile.getName()).exists() || TNELib.configurations.changed.contains(configurationFile.getName())) {
       Iterator<java.util.Map.Entry<String, Object>> it = configurations.entrySet().iterator();
 
       while (it.hasNext()) {

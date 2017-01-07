@@ -36,8 +36,6 @@ import java.util.regex.Pattern;
  **/
 public class TNELib extends JavaPlugin {
 
-  public List<String> modified = new ArrayList<>();
-
   public static TNELib instance;
   public TNEAPI api;
 
