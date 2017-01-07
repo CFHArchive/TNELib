@@ -46,6 +46,8 @@ public class TNELib extends JavaPlugin {
   public static ConfigurationManager configurations;
   private CommandManager commandManager;
 
+  public String saveFormat = "flatfile";
+  public Double currentSaveVersion = 0.0;
   public String defaultWorld = "Default";
   public static Map<String, UUID> uuidCache = new HashMap<>();
 
