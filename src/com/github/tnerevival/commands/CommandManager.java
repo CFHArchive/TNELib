@@ -16,14 +16,14 @@ import java.util.Map;
 public class CommandManager {
 
   public Map<String[], TNECommand> commands = new HashMap<>();
+  private Integer lastRegister = 0;
   private Field commandMap = null;
   private Field knownCommands = null;
 
-  public CommandManager() {
-    registerCommands();
-  }
+  public void registerCommands() {
+    if(lastRegister == commands.size()) return;
 
-  private void registerCommands() {
+    lastRegister = commands.size();
     try {
       commandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
       commandMap.setAccessible(true);

@@ -62,6 +62,16 @@ public class TNELib extends JavaPlugin {
     defaultWorld = Bukkit.getServer().getWorlds().get(0).getName();
   }
 
+  public void registerCommand(String[] accessors, TNECommand command) {
+    commandManager.commands.put(accessors, command);
+    commandManager.registerCommands();
+  }
+
+  public void registerCommands(Map<String[], TNECommand> commands) {
+    commandManager.commands = commands;
+    commandManager.registerCommands();
+  }
+
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] arguments) {
     TNECommand ecoCommand = commandManager.Find(label);
