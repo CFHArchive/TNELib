@@ -16,10 +16,7 @@
  */
 package com.github.tnerevival.core.collection;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by creatorfromhell on 11/2/2016.
@@ -28,6 +25,8 @@ public class EventMap<K, V> extends HashMap<K, V> {
 
   private MapListener<K, V> listener;
   private Map<K, V> map = new HashMap<>();
+  private Map<K, V> changed = new HashMap<>();
+  private long lastRefresh = new Date().getTime();
 
   public EventMap() {
     super();
@@ -40,7 +39,7 @@ public class EventMap<K, V> extends HashMap<K, V> {
 
   @Override
   public V put(K key, V value) {
-    listener.add(key, value);
+    listener.put(key, value);
     return map.put(key, value);
   }
 
