@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.TreeMap;
 
 /**
  * 
@@ -12,8 +11,6 @@ import java.util.TreeMap;
  *
  */
 public class SQLite extends SQLDatabase {
-
-  private TreeMap<Integer, SQLResult> results = new TreeMap<>();
 
   private String file;
 

@@ -2,20 +2,14 @@ package com.github.tnerevival.core.db;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.TreeMap;
 
 public class H2 extends SQLDatabase {
-
-  private TreeMap<Integer, SQLResult> results = new TreeMap<>();
 
   private String file;
   private String user;
   private String password;
-
-  private Connection connection;
 
   public H2(String file, String user, String password) {
     this.file = file;

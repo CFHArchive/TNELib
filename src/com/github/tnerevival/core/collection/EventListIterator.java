@@ -33,7 +33,11 @@ public class EventListIterator<E> {
   }
 
   public void remove() {
-    listener.remove(last);
+    remove(true);
+  }
+
+  public void remove(boolean database) {
+    if(database) listener.remove(last);
     iterator.remove();
   }
 

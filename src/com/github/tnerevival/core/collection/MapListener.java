@@ -24,8 +24,9 @@ import java.util.Set;
  * Created by creatorfromhell on 11/6/2016.
  **/
 public interface MapListener<K, V> {
-
   void update();
+  Map<K, V> changed();
+  void clearChanged();
   void put(K key, V value);
   V get(Object key);
   Collection<V> values();

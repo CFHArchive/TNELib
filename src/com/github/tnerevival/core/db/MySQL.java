@@ -1,9 +1,7 @@
 package com.github.tnerevival.core.db;
 
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.TreeMap;
 
 /**
  * 
@@ -11,16 +9,11 @@ import java.util.TreeMap;
  *
  */
 public class MySQL extends SQLDatabase {
-
-  private TreeMap<Integer, SQLResult> results = new TreeMap<>();
-
   private String host;
   private Integer port;
   private String database;
   private String user;
   private String password;
-
-  private Connection connection;
 
   public MySQL(String host, Integer port, String database, String user, String password) {
     this.host = host;
