@@ -16,7 +16,10 @@
  */
 package com.github.tnerevival.core.collection;
 
+import com.github.tnerevival.TNELib;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,32 +28,79 @@ import java.util.List;
 public class EventList<E> extends ArrayList<E> {
   private ListListener<E> listener;
   private List<E> list = new ArrayList<>();
+  private long lastRefresh = new Date().getTime();
+
+  public EventList() {
+    super();
+  }
+
+  public EventList(ListListener listener) {
+    super();
+    this.listener = listener;
+  }
+
+  public void update() {
+    listener.update();
+    listener.clearChanged();
+    lastRefresh = new Date().getTime();
+  }
+
+  @Override
+  public E get(int index) {
+    return list.get(index);
+  }
 
   @Override
   public int size() {
-    return super.size();
+    return listener.size();
   }
 
   @Override
   public boolean isEmpty() {
-    return super.isEmpty();
+    return listener.isEmpty();
   }
 
+  @Override
   public boolean add(E item) {
-    boolean added = super.add(item);
-    if(added) listener.add(item);
-    return added;
+    if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") || TNELib.instance.cache) {
+      if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") && TNELib.instance.cache && !contains(item)) {
+        listener.add(item);
+      }
+      return list.add(item);
+    }
+    return listener.add(item);
   }
 
+  @Override
+  public E remove(int index) {
+    E value = get(index);
+    remove(value);
+    return value;
+  }
+
+  @Override
   public boolean remove(Object item) {
-    listener.preRemove(item);
-    boolean removed = list.remove(item);
-    if(removed) listener.remove(item);
+    return remove(item, true);
+  }
+
+  public boolean remove(Object item, boolean database) {
+    boolean removed = true;
+    if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") && database) {
+      listener.preRemove(item);
+    }
+
+    if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") || TNELib.instance.cache) {
+      removed = list.remove(item);
+    }
+
+    if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") && !TNELib.instance.cache || database) {
+      removed = listener.remove(item);
+    }
     return removed;
   }
 
   public EventListIterator<E> getIterator() {
-    return new EventListIterator<>(super.iterator(), listener);
+    return new EventListIterator<>(list.iterator(), listener);
   }
 
   public void setListener(ListListener<E> listener) {

@@ -25,7 +25,10 @@ public interface ListListener<E> {
   void update();
   List<E> changed();
   void clearChanged();
-  void add(E item);
+  boolean add(E item);
+  int size();
+  boolean isEmpty();
+  boolean contains(Object item);
   void preRemove(Object item);
-  void remove(Object item);
+  boolean remove(Object item);
 }

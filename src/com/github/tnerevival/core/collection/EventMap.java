@@ -33,6 +33,11 @@ public class EventMap<K, V> extends HashMap<K, V> {
     super();
   }
 
+  public EventMap(MapListener listener) {
+    super();
+    this.listener = listener;
+  }
+
   public void update() {
     listener.update();
     listener.clearChanged();
@@ -69,9 +74,22 @@ public class EventMap<K, V> extends HashMap<K, V> {
 
   @Override
   public V remove(Object key) {
-    listener.preRemove(key, get(key));
-    V removed = map.remove(key);
-    listener.remove(key);
+    return remove(key, true);
+  }
+
+  public V remove(Object key, boolean database) {
+    V removed = get(key);
+    if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") && database) {
+      listener.preRemove(key, removed);
+    }
+
+    if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") || TNELib.instance.cache) {
+      removed = map.remove(key);
+    }
+
+    if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") && !TNELib.instance.cache || database) {
+      listener.remove(key);
+    }
     return removed;
   }
 
