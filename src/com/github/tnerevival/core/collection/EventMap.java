@@ -60,13 +60,23 @@ public class EventMap<K, V> extends HashMap<K, V> {
 
   @Override
   public V put(K key, V value) {
+    return put(key, value, false);
+  }
+
+  public V put(K key, V value, boolean skip) {
     if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") || TNELib.instance.cache) {
       map.put(key, value);
     }
 
-    if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile")) {
-      if(!TNELib.instance.cache || !map.containsKey(key)) {
-        listener.put(key, value);
+    if(!skip) {
+      if (!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile")) {
+        if (!TNELib.instance.cache || !map.containsKey(key)) {
+          listener.put(key, value);
+        }
+
+        if(TNELib.instance.cache && map.containsKey(key)) {
+          listener.changed().put(key, value);
+        }
       }
     }
     return value;
@@ -95,7 +105,7 @@ public class EventMap<K, V> extends HashMap<K, V> {
 
   @Override
   public boolean containsKey(Object key) {
-    return map.containsKey(key);
+    return get(key) != null;
   }
 
   public EventMapIterator<Map.Entry<K, V>> getIterator() {
@@ -120,8 +130,12 @@ public class EventMap<K, V> extends HashMap<K, V> {
 
   @Override
   public void putAll(Map<? extends K, ? extends V> m) {
+    putAll(m, false);
+  }
+
+  public void putAll(Map<? extends K, ? extends V> m, boolean skip) {
     for(Map.Entry<? extends K, ? extends V> entry : m.entrySet()) {
-      put(entry.getKey(), entry.getValue());
+      put(entry.getKey(), entry.getValue(), skip);
     }
   }
 

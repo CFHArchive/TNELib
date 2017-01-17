@@ -19,6 +19,7 @@ package com.github.tnerevival.core.collection;
 import com.github.tnerevival.TNELib;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -45,6 +46,20 @@ public class EventList<E> extends ArrayList<E> {
     lastRefresh = new Date().getTime();
   }
 
+  public Collection<E> getAll() {
+    if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") || TNELib.instance.cache) {
+      return list;
+    }
+    return listener.getAll();
+  }
+
+  public Collection<E> getAll(Object identifier) {
+    if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") || TNELib.instance.cache) {
+      return getAll();
+    }
+    return listener.getAll(identifier);
+  }
+
   @Override
   public E get(int index) {
     return list.get(index);
@@ -62,13 +77,34 @@ public class EventList<E> extends ArrayList<E> {
 
   @Override
   public boolean add(E item) {
+    return add(item, false);
+  }
+
+  public boolean add(E item, boolean skip) {
+
     if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") || TNELib.instance.cache) {
-      if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") && TNELib.instance.cache && !contains(item)) {
+      if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") && TNELib.instance.cache && !contains(item) && !skip) {
         listener.add(item);
+      }
+
+      if(TNELib.instance.cache && contains(item)) {
+        listener.changed().add(item);
       }
       return list.add(item);
     }
     return listener.add(item);
+  }
+
+  @Override
+  public boolean addAll(Collection<? extends E> c) {
+    return addAll(c, false);
+  }
+
+  public boolean addAll(Collection<? extends E> c, boolean skip) {
+    for(E element : c) {
+      add(element, skip);
+    }
+    return true;
   }
 
   @Override
@@ -85,7 +121,7 @@ public class EventList<E> extends ArrayList<E> {
 
   public boolean remove(Object item, boolean database) {
     boolean removed = true;
-    if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") && database) {
+    if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile")) {
       listener.preRemove(item);
     }
 
