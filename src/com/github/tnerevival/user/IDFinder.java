@@ -48,6 +48,16 @@ public class IDFinder {
     return player.getUniqueId();
   }
 
+  public static String getUsername(String identifier) {
+    if(isUUID(identifier)) {
+      if(getPlayer(identifier) == null) {
+        return MojangAPI.getPlayerUsername(getID(identifier));
+      }
+      return getPlayer(identifier).getName();
+    }
+    return identifier;
+  }
+
   public static Player getPlayer(String identifier) {
     UUID id = (getID(identifier));
     return Bukkit.getPlayer(id);
@@ -55,6 +65,12 @@ public class IDFinder {
 
   public static Player getPlayer(UUID id) {
     return Bukkit.getPlayer(id);
+  }
+
+  public static OfflinePlayer getOffline(String identifier) {
+    UUID id = getID(identifier);
+
+    return Bukkit.getOfflinePlayer(id);
   }
 
   public static UUID getID(String identifier) {

@@ -41,8 +41,7 @@ public class Paginator {
     for(int i = 0; i < collection.size(); i++) {
       if(i % perPage == 0 && i != 0) {
         pages.put(p.getPage(), p);
-        Integer highest = pages.lastKey();
-        p = new Page(highest++);
+        p = new Page(pages.lastKey() + 1);
       }
       p.addElement(values[i]);
     }

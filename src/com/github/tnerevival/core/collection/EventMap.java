@@ -171,6 +171,10 @@ public class EventMap<K, V> extends HashMap<K, V> {
     return map.entrySet();
   }
 
+  public MapListener getListener() {
+    return listener;
+  }
+
   public void setListener(MapListener<K, V> listener) {
     this.listener = listener;
   }

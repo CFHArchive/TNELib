@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 import java.util.UUID;
 
 public class MojangAPI {
@@ -24,6 +25,23 @@ public class MojangAPI {
     }
 
     return id;
+  }
+
+  public static String getPlayerUsername(UUID id) {
+    if(TNELib.uuidCache.containsValue(id)) {
+      for(Map.Entry<String, UUID> entry : TNELib.uuidCache.entrySet()) {
+        if(entry.getValue().equals(id)) {
+          return entry.getKey();
+        }
+      }
+    }
+    JSONObject object = send("https://sessionserver.mojang.com/session/minecraft/profile/" + id.toString().replace("-", ""));
+    String name = object.get("name").toString();
+
+    if(name != null) {
+      TNELib.uuidCache.put(name, id);
+    }
+    return name;
   }
 
   private static JSONObject send(String url) {

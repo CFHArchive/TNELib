@@ -23,17 +23,17 @@ import com.github.tnerevival.core.db.*;
  * Created by creatorfromhell on 1/16/2017.
  **/
 public class SQLManager {
-  private String mysqlHost;
-  private Integer mysqlPort;
-  private String mysqlDatabase;
-  private String mysqlUser;
-  private String mysqlPassword;
-  private String prefix;
-  private String flatfile;
-  private String h2File;
-  private String sqliteFile;
+  protected String mysqlHost;
+  protected Integer mysqlPort;
+  protected String mysqlDatabase;
+  protected String mysqlUser;
+  protected String mysqlPassword;
+  protected String prefix;
+  protected String flatfile;
+  protected String h2File;
+  protected String sqliteFile;
 
-  private Database db;
+  protected Database db;
 
   public SQLManager(String mysqlHost, Integer mysqlPort, String mysqlDatabase, String mysqlUser, String mysqlPassword, String prefix, String h2File, String sqliteFile, String flatfile) {
     this.mysqlHost = mysqlHost;
