@@ -40,6 +40,11 @@ public class SaveManager {
   }
 
   public void addVersion(Version version) {
+    addVersion(version, false);
+  }
+
+  public void addVersion(Version version, boolean current) {
+    if(current) TNELib.instance.currentSaveVersion = version.versionNumber();
     versions.put(version.versionNumber(), version);
   }
 
@@ -52,7 +57,7 @@ public class SaveManager {
       initiate();
       return;
     }
-    versionInstance.getSaveVersion();
+    saveVersion = versionInstance.getSaveVersion();
     TNELib.instance.getLogger().info("Save file of version: " + saveVersion + " detected.");
     load();
   }
