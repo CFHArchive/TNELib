@@ -18,10 +18,10 @@ public class SaveManager {
   File file;
 
   public SaveManager() {
-    versionInstance = versions.get(TNELib.instance.currentSaveVersion);
   }
 
   public void initialize() {
+    versionInstance = versions.get(TNELib.instance.currentSaveVersion);
     if(firstRun()) {
       initiate();
       return;

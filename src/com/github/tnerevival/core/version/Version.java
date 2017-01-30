@@ -1,30 +1,37 @@
 package com.github.tnerevival.core.version;
 
 import com.github.tnerevival.TNELib;
+import com.github.tnerevival.core.SQLManager;
 import com.github.tnerevival.core.db.*;
 
 import java.io.File;
 
 public abstract class Version {
-  protected Database db;
 
-  protected void createDB() {
+  protected Database db;
+  private SQLManager sqlManager;
+
+  public Version(SQLManager sqlManager) {
+    this.sqlManager = sqlManager;
+  }
+
+  private void createDB() {
     createDB(TNELib.instance.saveFormat.toLowerCase());
   }
 
-  protected void createDB(String type) {
+  private void createDB(String type) {
     switch(type) {
       case "mysql":
-        db = new MySQL(mysqlHost(), mysqlPort(), mysqlDatabase(), mysqlUser(), mysqlPassword());
+        db = new MySQL(sqlManager.getMysqlHost(), sqlManager.getMysqlPort(), sqlManager.getMysqlDatabase(), sqlManager.getMysqlUser(), sqlManager.getMysqlPassword());
         break;
       case "h2":
-        db = new H2(h2File(), mysqlUser(), mysqlPassword());
+        db = new H2(sqlManager.getH2File(), sqlManager.getMysqlUser(), sqlManager.getMysqlPassword());
         break;
       case "sqlite":
-        db = new H2(h2File(), mysqlUser(), mysqlPassword());
+        db = new SQLite(sqlManager.getSqliteFile());
         break;
       default:
-        db = new FlatFile(TNELib.instance.getDataFolder() + File.separator + ffFile());
+        db = new FlatFile(TNELib.instance.getDataFolder() + File.separator + sqlManager.getFlatfile());
     }
   }
 
@@ -55,17 +62,12 @@ public abstract class Version {
     return (FlatFile)db;
   }
 
+  public SQLManager getSqlManager() {
+    return sqlManager;
+  }
+
   //abstract methods to be implemented by each child class
   public abstract double versionNumber();
-  public abstract String mysqlHost();
-  public abstract Integer mysqlPort();
-  public abstract String mysqlDatabase();
-  public abstract String mysqlUser();
-  public abstract String mysqlPassword();
-  public abstract String prefix();
-  public abstract String h2File();
-  public abstract String sqliteFile();
-  public abstract String ffFile();
   public abstract void update(double version, String type);
   public abstract void loadFlat(File file);
   public abstract void saveFlat(File file);

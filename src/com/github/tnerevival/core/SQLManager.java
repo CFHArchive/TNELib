@@ -67,8 +67,44 @@ public class SQLManager {
     }
   }
 
+  public String getMysqlHost() {
+    return mysqlHost;
+  }
+
+  public Integer getMysqlPort() {
+    return mysqlPort;
+  }
+
+  public String getMysqlDatabase() {
+    return mysqlDatabase;
+  }
+
+  public String getMysqlUser() {
+    return mysqlUser;
+  }
+
+  public String getMysqlPassword() {
+    return mysqlPassword;
+  }
+
   public String getPrefix() {
     return prefix;
+  }
+
+  public String getFlatfile() {
+    return flatfile;
+  }
+
+  public String getH2File() {
+    return h2File;
+  }
+
+  public String getSqliteFile() {
+    return sqliteFile;
+  }
+
+  public Database getDb() {
+    return db;
   }
 
   //Helper methods to automatically cast db to proper database class
