@@ -1,184 +1,91 @@
+/*
+ * The New Economy Minecraft Server Plugin
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.github.tnerevival.core;
 
 import com.github.tnerevival.TNELib;
 import com.github.tnerevival.core.version.Version;
 
-import java.io.*;
-import java.sql.*;
-import java.util.HashMap;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.TreeMap;
 
+/**
+ * Created by creatorfromhell on 1/29/2017.
+ **/
 public class SaveManager {
 
-  public HashMap<Double, Version> versions = new HashMap<>();
+  private TreeMap<Double, Version> versions = new TreeMap<>();
 
-  public Version versionInstance;
-  Double saveVersion = 0.0;
-  File file;
+  private Version versionInstance;
+  private SQLManager sqlManager;
+  private Double saveVersion = 0.0;
+  private File file;
 
-  public SaveManager() {
+  public SaveManager(SQLManager sqlManager) {
+    this.sqlManager = sqlManager;
+  }
+
+  public void addVersion(Version version) {
+    versions.put(version.versionNumber(), version);
   }
 
   public void initialize() {
     versionInstance = versions.get(TNELib.instance.currentSaveVersion);
-    if(firstRun()) {
+    if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile")) {
+      file = new File(sqlManager.getFlatfile());
+    }
+    if(versionInstance.firstRun()) {
       initiate();
       return;
     }
-    getVersion();
+    versionInstance.getSaveVersion();
     TNELib.instance.getLogger().info("Save file of version: " + saveVersion + " detected.");
     load();
   }
 
-  public void recreate() {
-    if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile")) {
-      versionInstance.createTables(TNELib.instance.saveFormat);
+  private void update() {
+    int i = 0;
+    for(Double version : versions.headMap(TNELib.instance.currentSaveVersion, false).keySet()) {
+      if(i != 0) {
+        versions.get(version).update(versions.lowerKey(version), TNELib.instance.saveFormat);
+      }
+      i++;
     }
-  }
-
-  private Boolean firstRun() {
-    if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile")) {
-      return !file.exists();
-    } else if(TNELib.instance.saveFormat.equalsIgnoreCase("mysql")) {
-      Connection connection;
-      PreparedStatement statement;
-      ResultSet result;
-      String table = versionInstance.prefix() + "_INFO";
-      try {
-        Class.forName("com.mysql.jdbc.Driver");
-        connection = DriverManager.getConnection("jdbc:mysql://" + versionInstance.mysqlHost() + ":" + versionInstance.mysqlPort() + "/" + versionInstance.mysqlDatabase(), versionInstance.mysqlUser(), versionInstance.mysqlPassword());
-
-
-        result = connection.getMetaData().getTables(null, null, table, null);
-
-        return !result.next();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    } else if(TNELib.instance.saveFormat.equalsIgnoreCase("sqlite")) {
-      File sqliteDB = new File(versionInstance.sqliteFile());
-      if(!sqliteDB.exists()) {
-        return true;
-      }
-      Connection connection;
-      PreparedStatement statement;
-      ResultSet result;
-      String table = versionInstance.prefix() + "_INFO";
-      try {
-        Class.forName("org.sqlite.JDBC");
-        connection = DriverManager.getConnection("jdbc:sqlite:" + versionInstance.sqliteFile());
-        statement = connection.prepareStatement("SELECT * FROM sqlite_master WHERE TNELib.instance.saveFormat='table' AND name = ?;");
-        statement.setString(1, table);
-        result = statement.executeQuery();
-        Boolean toReturn = result.next();
-        connection.close();
-        return !toReturn;
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    } else if(TNELib.instance.saveFormat.equalsIgnoreCase("h2")) {
-      File h2DB = new File(versionInstance.h2File());
-      if(!h2DB.exists()) {
-        return true;
-      }
-      Connection connection;
-      PreparedStatement statement;
-      ResultSet result;
-      String table = versionInstance.prefix() + "_INFO";
-      try {
-        Class.forName("org.h2.Driver");
-        connection = DriverManager.getConnection("jdbc:h2:" + versionInstance.h2File() + ";mode=MySQL", versionInstance.mysqlUser(), versionInstance.mysqlPassword());
-        result = connection.getMetaData().getTables(null, null, table, null);
-        return result.next();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-    return !file.exists();
+    versionInstance.update(versions.lowerKey(TNELib.instance.currentSaveVersion), TNELib.instance.saveFormat);
   }
 
   private void initiate() {
     if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile")) {
-      try {
-        TNELib.instance.getDataFolder().mkdir();
-        file.createNewFile();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    } else if(TNELib.instance.saveFormat.equalsIgnoreCase("mysql")) {
-      versionInstance.createTables("mysql");
-    } else if(TNELib.instance.saveFormat.equalsIgnoreCase("sqlite") || TNELib.instance.saveFormat.equalsIgnoreCase("h2")) {
-      versionInstance.createTables("h2");
-    }
-  }
-
-  private void getVersion() {
-    if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile")) {
-      try {
-        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
-        saveVersion = ois.readDouble();
-        ois.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    } else if(TNELib.instance.saveFormat.equalsIgnoreCase("mysql")) {
-      Connection connection;
-      Statement statement;
-      ResultSet result;
-      String table = versionInstance.prefix() + "_INFO";
-      try {
-        Class.forName("com.mysql.jdbc.Driver");
-        connection = DriverManager.getConnection("jdbc:mysql://" + versionInstance.mysqlHost() + ":" + versionInstance.mysqlPort() + "/" + versionInstance.mysqlDatabase(), versionInstance.mysqlUser(), versionInstance.mysqlPassword());
-        statement = connection.createStatement();
-        result = statement.executeQuery("SELECT version FROM " + table + " WHERE id = 1;");
-        if(result.first()) {
-          saveVersion = Double.valueOf(result.getString("version"));
+      if(!file.exists()) {
+        try {
+          file.createNewFile();
+        } catch (IOException e) {
+          e.printStackTrace();
         }
-        connection.close();
-      } catch(Exception e) {
-        e.printStackTrace();
       }
-    } else if(TNELib.instance.saveFormat.equalsIgnoreCase("sqlite")) {
-      Connection connection;
-      Statement statement;
-      ResultSet result;
-      String table = versionInstance.prefix() + "_INFO";
-      try {
-        Class.forName("org.sqlite.JDBC");
-        connection = DriverManager.getConnection("jdbc:sqlite:" + versionInstance.sqliteFile());
-        statement = connection.createStatement();
-        result = statement.executeQuery("SELECT version FROM " + table + " WHERE id = 1;");
-        if(result.next()) {
-          saveVersion = Double.valueOf(result.getString("version"));
-        }
-        connection.close();
-      } catch(Exception e) {
-        e.printStackTrace();
-      }
-    } else if (TNELib.instance.saveFormat.equalsIgnoreCase("h2")) {
-      Connection connection;
-      Statement statement;
-      ResultSet result;
-      String table = versionInstance.prefix() + "_INFO";
-      try {
-        Class.forName("org.h2.Driver");
-        connection = DriverManager.getConnection("jdbc:h2:" + versionInstance.h2File() + ";mode=MySQL", versionInstance.mysqlUser(), versionInstance.mysqlPassword());
-        statement = connection.createStatement();
-        result = statement.executeQuery("SELECT version FROM " + table + " WHERE id = 1;");
-        if(result.next()) {
-          saveVersion = Double.valueOf(result.getString("version"));
-        }
-        connection.close();
-      } catch(Exception e) {
-        e.printStackTrace();
-      }
+    } else {
+      versionInstance.createTables(TNELib.instance.saveFormat);
     }
   }
 
   public void load() {
     if(saveVersion < versionInstance.versionNumber() && saveVersion != 0) {
-      versionInstance.update(saveVersion, TNELib.instance.saveFormat.toLowerCase());
+      update();
+      TNELib.instance.getLogger().info("Saved data has been updated!");
     }
     if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile")) {
       loadFlatFile();
@@ -189,6 +96,7 @@ public class SaveManager {
     } else if(TNELib.instance.saveFormat.equalsIgnoreCase("h2")) {
       loadH2();
     }
+    TNELib.instance.getLogger().info("Finished loading data!");
   }
 
   public void save() {
@@ -196,35 +104,15 @@ public class SaveManager {
       saveFlatFile();
     } else if(TNELib.instance.saveFormat.equalsIgnoreCase("mysql")) {
       saveMySQL();
-    } else if(TNELib.instance.saveFormat.equalsIgnoreCase("h2") || TNELib.instance.saveFormat.equalsIgnoreCase("sqlite")) {
+    } else if(TNELib.instance.saveFormat.equalsIgnoreCase("sqlite")) {
+      saveSQLite();
+    } else if(TNELib.instance.saveFormat.equalsIgnoreCase("h2")) {
       saveH2();
     }
-    TNELib.instance.getLogger().info("Data saved!");
+    TNELib.instance.getLogger().info("Finished saving data!");
   }
-
-  public Boolean backupDatabase() throws IOException {
-    if(TNELib.instance.saveFormat.equalsIgnoreCase("mysql")) return false;
-
-    String db = (TNELib.instance.saveFormat.equalsIgnoreCase("flatfile")) ? versionInstance.ffFile() : versionInstance.h2File();
-    FileInputStream fileIn = new FileInputStream(new File(TNELib.instance.getDataFolder(), db));
-    FileOutputStream fileOut = new FileOutputStream(new File(TNELib.instance.getDataFolder(), "Database.zip"));
-    ZipOutputStream zipOut = new ZipOutputStream(fileOut);
-    ZipEntry entry = new ZipEntry(db);
-    zipOut.putNextEntry(entry);
-    byte[] buffer = new byte[1024];
-    int length;
-    while ((length = fileIn.read(buffer)) > 0) {
-      zipOut.write(buffer, 0, length);
-    }
-    fileIn.close();
-    zipOut.closeEntry();
-    zipOut.close();
-    return true;
-  }
-
 
   //Actual Save/Load Methods
-
   //FlatFile Methods
   private void loadFlatFile() {
     Version loadVersion = (saveVersion != 0.0) ? versions.get(saveVersion) : versionInstance;

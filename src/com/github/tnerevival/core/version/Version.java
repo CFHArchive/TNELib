@@ -67,6 +67,8 @@ public abstract class Version {
   }
 
   //abstract methods to be implemented by each child class
+  public abstract boolean firstRun();
+  public abstract double getSaveVersion();
   public abstract double versionNumber();
   public abstract void update(double version, String type);
   public abstract void loadFlat(File file);
