@@ -20,7 +20,7 @@ public class UpdateChecker {
   public void getLatestBuild() {
     build = currentBuild;
     try {
-        URL url = new URL("https://creatorfromhell.com/tne/tnebuild.txt");
+        URL url = new URL(this.url);
         BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
         build = in.readLine();
         in.close();
