@@ -40,7 +40,7 @@ public class TNEAPI {
    * Configuration-related Methods.
    */
   public String getString(String configuration) {
-    return (String)getConfiguration(configuration, TNELib.instance.defaultWorld);
+    return (String)getConfiguration(configuration, TNELib.instance().defaultWorld);
   }
 
   public String getString(String configuration, String world) {
@@ -56,7 +56,7 @@ public class TNEAPI {
   }
 
   public Boolean getBoolean(String configuration) {
-    return (Boolean)getConfiguration(configuration, TNELib.instance.defaultWorld);
+    return (Boolean)getConfiguration(configuration, TNELib.instance().defaultWorld);
   }
 
   public Boolean getBoolean(String configuration, String world) {
@@ -72,7 +72,7 @@ public class TNEAPI {
   }
 
   public Integer getInteger(String configuration) {
-    return (Integer)getConfiguration(configuration, TNELib.instance.defaultWorld);
+    return (Integer)getConfiguration(configuration, TNELib.instance().defaultWorld);
   }
 
   public Integer getInteger(String configuration, String world) {
@@ -89,11 +89,11 @@ public class TNEAPI {
 
   public boolean hasConfiguration(String configuration) {
     if(configuration.toLowerCase().contains("database")) return false;
-    return TNELib.configurations.hasConfiguration(configuration);
+    return TNELib.configurations().hasConfiguration(configuration);
   }
 
   public Object getConfiguration(String configuration) {
-    return getConfiguration(configuration, TNELib.instance.defaultWorld);
+    return getConfiguration(configuration, TNELib.instance().defaultWorld);
   }
 
   public Object getConfiguration(String configuration, String world) {
@@ -106,11 +106,11 @@ public class TNEAPI {
 
   public Object getConfiguration(String configuration, String world, String player) {
     if(configuration.toLowerCase().contains("database")) return "";
-    return TNELib.configurations.getConfiguration(configuration, world, player);
+    return TNELib.configurations().getConfiguration(configuration, world, player);
   }
 
   public void setConfiguration(String configuration, Object value) {
     if(configuration.toLowerCase().contains("database")) return;
-    TNELib.configurations.setConfiguration(configuration, value);
+    TNELib.configurations().setConfiguration(configuration, value);
   }
 }

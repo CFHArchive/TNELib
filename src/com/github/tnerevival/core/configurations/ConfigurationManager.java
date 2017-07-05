@@ -163,7 +163,7 @@ public class ConfigurationManager {
 
   public Boolean containsPrefix(String prefix) {
     for(Configuration c : configurations.values()) {
-      if(c.node().equals(prefix)) {
+      if(c.node().contains(prefix)) {
         return true;
       }
     }
@@ -172,7 +172,7 @@ public class ConfigurationManager {
 
   public String fromPrefix(String prefix) {
     for(Map.Entry<String, Configuration> entry : configurations.entrySet()) {
-      if(entry.getValue().node().equals(prefix)) {
+      if(entry.getValue().node().contains(prefix)) {
         return entry.getKey();
       }
     }

@@ -56,7 +56,7 @@ public class CommandManager {
     try {
       Constructor<PluginCommand> c = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class);
       c.setAccessible(true);
-      PluginCommand pluginCommand = c.newInstance(command, TNELib.instance);
+      PluginCommand pluginCommand = c.newInstance(command, TNELib.instance());
       if(pluginCommand != null) {
         ((SimpleCommandMap) commandMap.get(Bukkit.getServer())).register(command, pluginCommand);
       }

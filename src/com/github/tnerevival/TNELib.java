@@ -38,14 +38,14 @@ import java.util.regex.Pattern;
  **/
 public class TNELib extends JavaPlugin {
 
-  public static TNELib instance;
-  public TNEAPI api;
+  protected static TNELib instance;
+  protected TNEAPI api;
 
 
   public SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss.S");
   public static final Pattern uuidCreator = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
 
-  public static ConfigurationManager configurations;
+  private static ConfigurationManager configurations;
   private CommandManager commandManager;
 
   /*
@@ -69,6 +69,10 @@ public class TNELib extends JavaPlugin {
     commandManager = new CommandManager();
 
     defaultWorld = Bukkit.getServer().getWorlds().get(0).getName();
+  }
+
+  public CommandManager getCommandManager() {
+    return commandManager;
   }
 
   public void registerCommand(String[] accessors, TNECommand command) {
@@ -110,5 +114,17 @@ public class TNELib extends JavaPlugin {
   }
 
   private void setConfigurationDefaults() throws UnsupportedEncodingException {
+  }
+
+  public static TNELib instance() {
+    return instance;
+  }
+
+  public TNEAPI api() {
+    return api;
+  }
+
+  public static ConfigurationManager configurations() {
+    return configurations;
   }
 }

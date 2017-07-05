@@ -48,7 +48,7 @@ public class SQLManager {
   }
 
   private void createDB() {
-    createDB(TNELib.instance.saveFormat);
+    createDB(TNELib.instance().saveFormat);
   }
 
   private void createDB(String type) {

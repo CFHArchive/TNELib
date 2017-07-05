@@ -6,15 +6,16 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 
 public abstract class Configuration {
 
   public abstract FileConfiguration getConfiguration();
 
-  public abstract String node();
+  public abstract List<String> node();
 
-  public static HashMap<String, Object> configurations = new HashMap<>();
+  public HashMap<String, Object> configurations = new HashMap<>();
 
   public void load(FileConfiguration configurationFile) {
     Iterator<java.util.Map.Entry<String, Object>> it = configurations.entrySet().iterator();
@@ -28,7 +29,7 @@ public abstract class Configuration {
   }
 
   public void save(FileConfiguration configurationFile) {
-    if(!new File(TNELib.instance.getDataFolder(), configurationFile.getName()).exists() || TNELib.configurations.changed.contains(configurationFile.getName())) {
+    if(!new File(TNELib.instance().getDataFolder(), configurationFile.getName()).exists() || TNELib.configurations().changed.contains(configurationFile.getName())) {
       Iterator<java.util.Map.Entry<String, Object>> it = configurations.entrySet().iterator();
 
       while (it.hasNext()) {

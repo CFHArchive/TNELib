@@ -44,13 +44,13 @@ public class SaveManager {
   }
 
   public void addVersion(Version version, boolean current) {
-    if(current) TNELib.instance.currentSaveVersion = version.versionNumber();
+    if(current) TNELib.instance().currentSaveVersion = version.versionNumber();
     versions.put(version.versionNumber(), version);
   }
 
   public void initialize() {
-    versionInstance = versions.get(TNELib.instance.currentSaveVersion);
-    if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile")) {
+    versionInstance = versions.get(TNELib.instance().currentSaveVersion);
+    if(TNELib.instance().saveFormat.equalsIgnoreCase("flatfile")) {
       file = new File(sqlManager.getFlatfile());
     }
     if(versionInstance.firstRun()) {
@@ -58,23 +58,23 @@ public class SaveManager {
       return;
     }
     saveVersion = versionInstance.getSaveVersion();
-    TNELib.instance.getLogger().info("Save file of version: " + saveVersion + " detected.");
+    TNELib.instance().getLogger().info("Save file of version: " + saveVersion + " detected.");
     load();
   }
 
   private void update() {
     int i = 0;
-    for(Double version : versions.headMap(TNELib.instance.currentSaveVersion, false).keySet()) {
+    for(Double version : versions.headMap(TNELib.instance().currentSaveVersion, false).keySet()) {
       if(i != 0) {
-        versions.get(version).update(versions.lowerKey(version), TNELib.instance.saveFormat);
+        versions.get(version).update(versions.lowerKey(version), TNELib.instance().saveFormat);
       }
       i++;
     }
-    versionInstance.update(versions.lowerKey(TNELib.instance.currentSaveVersion), TNELib.instance.saveFormat);
+    versionInstance.update(versions.lowerKey(TNELib.instance().currentSaveVersion), TNELib.instance().saveFormat);
   }
 
   private void initiate() {
-    if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile")) {
+    if(TNELib.instance().saveFormat.equalsIgnoreCase("flatfile")) {
       if(!file.exists()) {
         try {
           file.createNewFile();
@@ -83,38 +83,38 @@ public class SaveManager {
         }
       }
     } else {
-      versionInstance.createTables(TNELib.instance.saveFormat);
+      versionInstance.createTables(TNELib.instance().saveFormat);
     }
   }
 
   public void load() {
     if(saveVersion < versionInstance.versionNumber() && saveVersion != 0) {
       update();
-      TNELib.instance.getLogger().info("Saved data has been updated!");
+      TNELib.instance().getLogger().info("Saved data has been updated!");
     }
-    if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile")) {
+    if(TNELib.instance().saveFormat.equalsIgnoreCase("flatfile")) {
       loadFlatFile();
-    } else if(TNELib.instance.saveFormat.equalsIgnoreCase("mysql")) {
+    } else if(TNELib.instance().saveFormat.equalsIgnoreCase("mysql")) {
       loadMySQL();
-    } else if(TNELib.instance.saveFormat.equalsIgnoreCase("sqlite")) {
+    } else if(TNELib.instance().saveFormat.equalsIgnoreCase("sqlite")) {
       loadSQLite();
-    } else if(TNELib.instance.saveFormat.equalsIgnoreCase("h2")) {
+    } else if(TNELib.instance().saveFormat.equalsIgnoreCase("h2")) {
       loadH2();
     }
-    TNELib.instance.getLogger().info("Finished loading data!");
+    TNELib.instance().getLogger().info("Finished loading data!");
   }
 
   public void save() {
-    if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile")) {
+    if(TNELib.instance().saveFormat.equalsIgnoreCase("flatfile")) {
       saveFlatFile();
-    } else if(TNELib.instance.saveFormat.equalsIgnoreCase("mysql")) {
+    } else if(TNELib.instance().saveFormat.equalsIgnoreCase("mysql")) {
       saveMySQL();
-    } else if(TNELib.instance.saveFormat.equalsIgnoreCase("sqlite")) {
+    } else if(TNELib.instance().saveFormat.equalsIgnoreCase("sqlite")) {
       saveSQLite();
-    } else if(TNELib.instance.saveFormat.equalsIgnoreCase("h2")) {
+    } else if(TNELib.instance().saveFormat.equalsIgnoreCase("h2")) {
       saveH2();
     }
-    TNELib.instance.getLogger().info("Finished saving data!");
+    TNELib.instance().getLogger().info("Finished saving data!");
   }
 
   //Actual Save/Load Methods

@@ -111,7 +111,7 @@ public abstract class TNECommand {
 
   public boolean execute(CommandSender sender, String command, String[] arguments) {
 
-    String world = TNELib.instance.defaultWorld;
+    String world = TNELib.instance().defaultWorld;
 
     if(developer()) {
       if(!((Player)sender).getUniqueId().equals("5bb0dcb3-98ee-47b3-8f66-3eb1cdd1a881")) {

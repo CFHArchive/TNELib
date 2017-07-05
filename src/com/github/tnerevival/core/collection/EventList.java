@@ -47,14 +47,14 @@ public class EventList<E> extends ArrayList<E> {
   }
 
   public Collection<E> getAll() {
-    if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") || TNELib.instance.cache) {
+    if(TNELib.instance().saveFormat.equalsIgnoreCase("flatfile") || TNELib.instance().cache) {
       return list;
     }
     return listener.getAll();
   }
 
   public Collection<E> getAll(Object identifier) {
-    if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") || TNELib.instance.cache) {
+    if(TNELib.instance().saveFormat.equalsIgnoreCase("flatfile") || TNELib.instance().cache) {
       return getAll();
     }
     return listener.getAll(identifier);
@@ -82,12 +82,12 @@ public class EventList<E> extends ArrayList<E> {
 
   public boolean add(E item, boolean skip) {
 
-    if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") || TNELib.instance.cache) {
-      if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") && TNELib.instance.cache && !contains(item) && !skip) {
+    if(TNELib.instance().saveFormat.equalsIgnoreCase("flatfile") || TNELib.instance().cache) {
+      if(!TNELib.instance().saveFormat.equalsIgnoreCase("flatfile") && TNELib.instance().cache && !contains(item) && !skip) {
         listener.add(item);
       }
 
-      if(TNELib.instance.cache && contains(item)) {
+      if(TNELib.instance().cache && contains(item)) {
         listener.changed().add(item);
       }
       return list.add(item);
@@ -121,15 +121,15 @@ public class EventList<E> extends ArrayList<E> {
 
   public boolean remove(Object item, boolean database) {
     boolean removed = true;
-    if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile")) {
+    if(!TNELib.instance().saveFormat.equalsIgnoreCase("flatfile")) {
       listener.preRemove(item);
     }
 
-    if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") || TNELib.instance.cache) {
+    if(TNELib.instance().saveFormat.equalsIgnoreCase("flatfile") || TNELib.instance().cache) {
       removed = list.remove(item);
     }
 
-    if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") && !TNELib.instance.cache || database) {
+    if(!TNELib.instance().saveFormat.equalsIgnoreCase("flatfile") && !TNELib.instance().cache || database) {
       removed = listener.remove(item);
     }
     return removed;

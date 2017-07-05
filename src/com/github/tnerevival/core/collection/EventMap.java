@@ -46,12 +46,12 @@ public class EventMap<K, V> extends HashMap<K, V> {
 
   @Override
   public V get(Object key) {
-    if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") || TNELib.instance.cache) {
+    if(TNELib.instance().saveFormat.equalsIgnoreCase("flatfile") || TNELib.instance().cache) {
       return map.get(key);
     }
 
-    if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile")) {
-      if(!TNELib.instance.cache || !map.containsKey(key)) {
+    if(!TNELib.instance().saveFormat.equalsIgnoreCase("flatfile")) {
+      if(!TNELib.instance().cache || !map.containsKey(key)) {
         return listener.get(key);
       }
     }
@@ -64,17 +64,17 @@ public class EventMap<K, V> extends HashMap<K, V> {
   }
 
   public V put(K key, V value, boolean skip) {
-    if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") || TNELib.instance.cache) {
+    if(TNELib.instance().saveFormat.equalsIgnoreCase("flatfile") || TNELib.instance().cache) {
       map.put(key, value);
     }
 
     if(!skip) {
-      if (!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile")) {
-        if (!TNELib.instance.cache || !map.containsKey(key)) {
+      if (!TNELib.instance().saveFormat.equalsIgnoreCase("flatfile")) {
+        if (!TNELib.instance().cache || !map.containsKey(key)) {
           listener.put(key, value);
         }
 
-        if(TNELib.instance.cache && map.containsKey(key)) {
+        if(TNELib.instance().cache && map.containsKey(key)) {
           listener.changed().put(key, value);
         }
       }
@@ -89,15 +89,15 @@ public class EventMap<K, V> extends HashMap<K, V> {
 
   public V remove(Object key, boolean database) {
     V removed = get(key);
-    if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") && database) {
+    if(!TNELib.instance().saveFormat.equalsIgnoreCase("flatfile") && database) {
       listener.preRemove(key, removed);
     }
 
-    if(TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") || TNELib.instance.cache) {
+    if(TNELib.instance().saveFormat.equalsIgnoreCase("flatfile") || TNELib.instance().cache) {
       removed = map.remove(key);
     }
 
-    if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") && !TNELib.instance.cache || database) {
+    if(!TNELib.instance().saveFormat.equalsIgnoreCase("flatfile") && !TNELib.instance().cache || database) {
       listener.remove(key);
     }
     return removed;
@@ -114,7 +114,7 @@ public class EventMap<K, V> extends HashMap<K, V> {
 
   @Override
   public int size() {
-    if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile")) {
+    if(!TNELib.instance().saveFormat.equalsIgnoreCase("flatfile")) {
       return listener.size();
     }
     return map.size();
@@ -122,7 +122,7 @@ public class EventMap<K, V> extends HashMap<K, V> {
 
   @Override
   public boolean isEmpty() {
-    if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile")) {
+    if(!TNELib.instance().saveFormat.equalsIgnoreCase("flatfile")) {
       return listener.isEmpty();
     }
     return map.isEmpty();
@@ -141,7 +141,7 @@ public class EventMap<K, V> extends HashMap<K, V> {
 
   @Override
   public boolean containsValue(Object value) {
-    if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") && !TNELib.instance.cache) {
+    if(!TNELib.instance().saveFormat.equalsIgnoreCase("flatfile") && !TNELib.instance().cache) {
       return listener.containsValue(value);
     }
     return map.containsValue(value);
@@ -149,7 +149,7 @@ public class EventMap<K, V> extends HashMap<K, V> {
 
   @Override
   public Set<K> keySet() {
-    if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") && !TNELib.instance.cache) {
+    if(!TNELib.instance().saveFormat.equalsIgnoreCase("flatfile") && !TNELib.instance().cache) {
       return listener.keySet();
     }
     return map.keySet();
@@ -157,7 +157,7 @@ public class EventMap<K, V> extends HashMap<K, V> {
 
   @Override
   public Collection<V> values() {
-    if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") && !TNELib.instance.cache) {
+    if(!TNELib.instance().saveFormat.equalsIgnoreCase("flatfile") && !TNELib.instance().cache) {
       return listener.values();
     }
     return map.values();
@@ -165,7 +165,7 @@ public class EventMap<K, V> extends HashMap<K, V> {
 
   @Override
   public Set<Map.Entry<K, V>> entrySet() {
-    if(!TNELib.instance.saveFormat.equalsIgnoreCase("flatfile") && !TNELib.instance.cache) {
+    if(!TNELib.instance().saveFormat.equalsIgnoreCase("flatfile") && !TNELib.instance().cache) {
       return listener.entrySet();
     }
     return map.entrySet();
