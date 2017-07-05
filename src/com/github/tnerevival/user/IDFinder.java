@@ -16,7 +16,9 @@
  */
 package com.github.tnerevival.user;
 
+import com.github.tnerevival.TNELib;
 import com.github.tnerevival.core.api.MojangAPI;
+import com.github.tnerevival.core.utils.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -29,6 +31,34 @@ import java.util.UUID;
  **/
 public class IDFinder {
 
+  public static UUID ecoID(String username) {
+    return ecoID(username, false);
+  }
+
+  public static UUID ecoID(String username, boolean skip) {
+    for(String s : TNELib.instance().offlineIDS.keySet()) {
+      if(s.equalsIgnoreCase(username)) {
+        return TNELib.instance().offlineIDS.get(s);
+      }
+    }
+    UUID eco = (skip)? genUUID() : genUUID(username);
+    TNELib.instance().offlineIDS.put(username, eco);
+    return eco;
+  }
+
+  public static String getUsername(String identifier) {
+    if(isUUID(identifier)) {
+      if(getPlayer(identifier) == null) {
+        if(getOffline(identifier) != null) {
+          return getOffline(identifier).getName();
+        }
+        return MojangAPI.getPlayerUsername(getID(identifier));
+      }
+      return getPlayer(identifier).getName();
+    }
+    return identifier;
+  }
+
   public static UUID genUUID(String name) {
     UUID id = MojangAPI.getPlayerUUID(name);
     if(id != null) return id;
@@ -37,33 +67,34 @@ public class IDFinder {
   }
 
   public static UUID genUUID() {
-    return UUID.randomUUID();
+    UUID id = UUID.randomUUID();
+    while(TNELib.instance().offlineIDS.containsValue(id)) {
+      //This should never happen, but we'll play it safe
+      id = UUID.randomUUID();
+    }
+    return id;
+  }
+
+  public static String ecoToUsername(UUID id) {
+    return (Utilities.getKey(TNELib.instance().offlineIDS, id) != null)? (String)Utilities.getKey(TNELib.instance().offlineIDS, id) : getUsername(id.toString());
   }
 
   public static UUID getID(Player player) {
-    return getID(player.getDisplayName());
+    return getID(player.getName());
   }
 
   public static UUID getID(OfflinePlayer player) {
-    return player.getUniqueId();
-  }
-
-  public static String getUsername(String identifier) {
-    if(isUUID(identifier)) {
-      if(getPlayer(identifier) == null) {
-        return MojangAPI.getPlayerUsername(getID(identifier));
-      }
-      return getPlayer(identifier).getName();
+    if(!TNELib.instance().useUUID) {
+      return ecoID(player.getName());
     }
-    return identifier;
+    return player.getUniqueId();
   }
 
   public static Player getPlayer(String identifier) {
     UUID id = (getID(identifier));
-    return Bukkit.getPlayer(id);
-  }
-
-  public static Player getPlayer(UUID id) {
+    if(!TNELib.instance().useUUID) {
+      return Bukkit.getPlayer(IDFinder.ecoToUsername(id));
+    }
     return Bukkit.getPlayer(id);
   }
 
@@ -74,15 +105,50 @@ public class IDFinder {
   }
 
   public static UUID getID(String identifier) {
-    identifier = ChatColor.stripColor(identifier);
+    identifier = ChatColor.stripColor(identifier.replaceAll("\\[.*?\\] ?", "")).trim();
+    TNELib.debug("GETID: " + identifier);
     if(isUUID(identifier)) {
       return UUID.fromString(identifier);
     }
-    UUID mojangID = MojangAPI.getPlayerUUID(identifier);
+
+    if(identifier.contains("faction-")) {
+      TNELib.debug("Faction");
+      UUID id = ecoID(identifier);
+      checkSpecial(id);
+      return id;
+    }
+
+    if(identifier.contains("town-")) {
+      TNELib.debug("Towny Town");
+      UUID id = ecoID(identifier);
+      checkSpecial(id);
+      return id;
+    }
+
+    if(identifier.contains("nation-")) {
+      TNELib.debug("Towny Nation");
+      UUID id = ecoID(identifier);
+      checkSpecial(id);
+      return id;
+    }
+
+    if(!TNELib.instance().useUUID) {
+      TNELib.debug("ECO ID RETURNED");
+      return ecoID(identifier);
+    }
+
+    UUID mojangID = (identifier.equalsIgnoreCase(TNELib.instance().consoleName))? null : MojangAPI.getPlayerUUID(identifier);
     if(mojangID == null) {
-      return genUUID(identifier);
+      TNELib.debug("MOJANG API RETURNED NULL VALUE");
+      return ecoID(identifier);
     }
     return mojangID;
+  }
+
+  private static void checkSpecial(UUID id) {
+    if(!TNELib.instance().special.contains(id)) {
+      TNELib.instance().special.add(id);
+    }
   }
 
   public static boolean isUUID(String lookup) {

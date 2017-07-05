@@ -71,7 +71,7 @@ public class Message {
   }
 
   public void translate(String world, UUID id) {
-    translate(world, IDFinder.getPlayer(id));
+    translate(world, IDFinder.getPlayer(id.toString()));
   }
 
   public String grab(String world, CommandSender sender) {

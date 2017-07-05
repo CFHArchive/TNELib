@@ -28,9 +28,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -38,8 +36,12 @@ import java.util.regex.Pattern;
  **/
 public class TNELib extends JavaPlugin {
 
+  public Map<String, UUID> offlineIDS = new HashMap<>();
+  public List<UUID> special = new ArrayList<>();
+
   protected static TNELib instance;
   protected TNEAPI api;
+
 
 
   public SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss.S");
@@ -54,6 +56,9 @@ public class TNELib extends JavaPlugin {
   public String saveFormat = "flatfile";
   public boolean directSQL = true;
   public boolean cache = true;
+  public boolean debugMode = false;
+  public boolean useUUID = true;
+  public String consoleName = "Server Name";
   public long update = 600;
 
   public Double currentSaveVersion = 0.0;
@@ -126,5 +131,23 @@ public class TNELib extends JavaPlugin {
 
   public static ConfigurationManager configurations() {
     return configurations;
+  }
+
+  public static void debug(String message) {
+    if(TNELib.instance().debugMode) {
+      TNELib.instance().getLogger().info("[DEBUG MODE]" + message);
+    }
+  }
+
+  public static void debug(StackTraceElement[] stack) {
+    for(StackTraceElement element : stack) {
+      debug(element.toString());
+    }
+  }
+
+  public static void debug(Exception e) {
+    if(TNELib.instance().debugMode) {
+      e.printStackTrace();
+    }
   }
 }
