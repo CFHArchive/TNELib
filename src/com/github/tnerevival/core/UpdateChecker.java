@@ -22,7 +22,7 @@ public class UpdateChecker {
     try {
         URL url = new URL(this.url);
         BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-        build = in.readLine();
+        this.build = in.readLine();
         in.close();
     } catch (Exception e) {
       e.printStackTrace();
@@ -36,5 +36,13 @@ public class UpdateChecker {
     if(latest < current) return ReleaseType.PRERELEASE;
     if(latest.equals(current)) return ReleaseType.LATEST;
     return ReleaseType.OUTDATED;
+  }
+
+  public String getBuild() {
+    return build;
+  }
+
+  public String getCurrentBuild() {
+    return currentBuild;
   }
 }
