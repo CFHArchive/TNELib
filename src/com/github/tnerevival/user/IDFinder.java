@@ -22,6 +22,7 @@ import com.github.tnerevival.core.utils.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -77,6 +78,13 @@ public class IDFinder {
 
   public static String ecoToUsername(UUID id) {
     return (Utilities.getKey(TNELib.instance().offlineIDS, id) != null)? (String)Utilities.getKey(TNELib.instance().offlineIDS, id) : getUsername(id.toString());
+  }
+
+  public static UUID getID(CommandSender sender) {
+    if(!(sender instanceof Player)) {
+      return getID(TNELib.instance().consoleName);
+    }
+    return getID((Player)sender);
   }
 
   public static UUID getID(Player player) {

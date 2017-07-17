@@ -91,7 +91,8 @@ public abstract class TNECommand {
 
     for(Integer i : send) {
       for(String s : help.get(i)) {
-        String message = s.replaceFirst("/" , "<green>/").replaceFirst("-", "<white>-");
+        String message = (s.contains("Messages."))? new Message(s).grab("", sender) : s;
+        message = message.replaceFirst("/" , "<green>/").replaceFirst("-", "<white>-");
         new Message(message).translate("", sender);
       }
     }

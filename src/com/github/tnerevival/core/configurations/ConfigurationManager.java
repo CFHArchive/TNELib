@@ -74,6 +74,21 @@ public class ConfigurationManager {
     getConfiguration(configID).save(configurationFile);
   }
 
+  public boolean reload(String configID) {
+    if(configID.equalsIgnoreCase("all")) {
+      for(String str : loaded) {
+        save(configurations.get(str).getConfiguration(), str);
+        load(configurations.get(str).getConfiguration(), str);
+      }
+      return true;
+    } else if(loaded.contains(configID)) {
+      save(configurations.get(configID).getConfiguration(), configID);
+      load(configurations.get(configID).getConfiguration(), configID);
+      return true;
+    }
+    return false;
+  }
+
   public Object getValue(String node, String configuration) {
     return getConfiguration(configuration).getValue(node);
   }
