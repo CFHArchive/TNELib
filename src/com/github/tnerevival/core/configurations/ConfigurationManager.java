@@ -74,6 +74,22 @@ public class ConfigurationManager {
     getConfiguration(configID).save(configurationFile);
   }
 
+  public void saveAll() {
+    for(Configuration configuration : configurations.values()) {
+      configuration.save(configuration.getConfiguration());
+    }
+  }
+
+  public void save(Configuration configuration) {
+    configuration.save(configuration.getConfiguration());
+  }
+
+  public void undoAll() {
+    for(Configuration configuration : configurations.values()) {
+      configuration.modified.clear();
+    }
+  }
+
   public boolean reload(String configID) {
     if(configID.equalsIgnoreCase("all")) {
       for(String str : loaded) {
@@ -89,13 +105,30 @@ public class ConfigurationManager {
     return false;
   }
 
+  public Object getValue(String node) {
+    String[] exploded = node.split("\\.");
+    String prefix = "Core";
+    if(containsPrefix(exploded[0])) {
+      prefix = exploded[0];
+    }
+    return getConfiguration(fromPrefix(prefix)).getValue(node);
+  }
+
   public Object getValue(String node, String configuration) {
     return getConfiguration(configuration).getValue(node);
   }
 
+  public void setValue(String node, Object value) {
+    String[] exploded = node.split("\\.");
+    String prefix = "Core";
+    if(containsPrefix(exploded[0])) {
+      prefix = exploded[0];
+    }
+    getConfiguration(fromPrefix(prefix)).setValue(node, value);
+  }
+
   public void setValue(String node, String configuration, Object value) {
     getConfiguration(configuration).setValue(node, value);
-    getConfiguration(configuration).save(getFileConfiguration(configuration));
   }
 
   public Boolean hasNode(String node, String configuration) {
