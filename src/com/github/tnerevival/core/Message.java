@@ -88,6 +88,30 @@ public class Message {
     return message;
   }
 
+  public String[] grabWithNew(String world, CommandSender sender) {
+    String id = (sender instanceof Player)? IDFinder.getID((Player)sender).toString() : "";
+    String found = TNELib.instance().api().getString(this.node, world, id);
+
+    String[] message = (found == null)? new String[] { this.node } : found.split("<newline>");
+
+    String[] formatted = new String[message.length];
+
+    for(int i = 0; i < message.length; i++) {
+      String send = message[i];
+      if (!send.equals(this.node)) {
+        Iterator<java.util.Map.Entry<String, String>> it = variables.entrySet().iterator();
+
+        while (it.hasNext()) {
+          java.util.Map.Entry<String, String> entry = it.next();
+          send = send.replace(entry.getKey(), entry.getValue());
+        }
+      }
+      Boolean strip = !(sender instanceof Player);
+      formatted[i] = replaceColours(send, strip);
+    }
+    return formatted;
+  }
+
   public void translate(String world, CommandSender sender) {
     if(sender == null) return;
     String id = (sender instanceof Player)? IDFinder.getID((Player)sender).toString() : "";
@@ -105,7 +129,7 @@ public class Message {
         }
       }
       Boolean strip = !(sender instanceof Player);
-            sender.sendMessage(replaceColours(send, strip));
+      sender.sendMessage(replaceColours(send, strip));
     }
   }
 }

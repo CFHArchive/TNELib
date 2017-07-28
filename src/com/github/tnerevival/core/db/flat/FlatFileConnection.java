@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * 
@@ -15,12 +17,14 @@ import java.io.ObjectOutputStream;
  */
 public class FlatFileConnection {
 
+  private boolean gzip = true;
   private File file;
   private ObjectInputStream ois;
   private ObjectOutputStream oos;
 
-  public FlatFileConnection(String fileName) {
+  public FlatFileConnection(String fileName, boolean gzip) {
     file = new File(fileName);
+    this.gzip = gzip;
   }
 
   public void close() {
@@ -60,7 +64,8 @@ public class FlatFileConnection {
   public ObjectInputStream getOIS() {
     if(ois == null) {
       try {
-        ois = new ObjectInputStream(new FileInputStream(file));
+        if(gzip) ois = new ObjectInputStream(new GZIPInputStream(new FileInputStream(file)));
+        else ois = new ObjectInputStream(new FileInputStream(file));
       } catch (FileNotFoundException e) {
         e.printStackTrace();
       } catch (IOException e) {
@@ -83,7 +88,8 @@ public class FlatFileConnection {
   public ObjectOutputStream getOOS() {
     if(oos == null) {
       try {
-        oos = new ObjectOutputStream(new FileOutputStream(file));
+        if(gzip) oos = new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream(file)));
+        else oos = new ObjectOutputStream(new FileOutputStream(file));
       } catch (FileNotFoundException e) {
         e.printStackTrace();
       } catch (IOException e) {

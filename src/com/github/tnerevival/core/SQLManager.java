@@ -32,10 +32,11 @@ public class SQLManager {
   protected String flatfile;
   protected String h2File;
   protected String sqliteFile;
+  protected boolean gzip = true;
 
   protected Database db;
 
-  public SQLManager(String mysqlHost, Integer mysqlPort, String mysqlDatabase, String mysqlUser, String mysqlPassword, String prefix, String h2File, String sqliteFile, String flatfile) {
+  public SQLManager(String mysqlHost, Integer mysqlPort, String mysqlDatabase, String mysqlUser, String mysqlPassword, String prefix, String h2File, String sqliteFile, String flatfile, boolean gzip) {
     this.mysqlHost = mysqlHost;
     this.mysqlPort = mysqlPort;
     this.mysqlDatabase = mysqlDatabase;
@@ -45,6 +46,7 @@ public class SQLManager {
     this.flatfile = flatfile;
     this.h2File = h2File;
     this.sqliteFile = sqliteFile;
+    this.gzip = gzip;
   }
 
   private void createDB() {
@@ -63,7 +65,7 @@ public class SQLManager {
         db = new SQLite(sqliteFile);
         break;
       default:
-        db = new FlatFile(flatfile);
+        db = new FlatFile(flatfile, gzip);
     }
   }
 
@@ -105,6 +107,10 @@ public class SQLManager {
 
   public Database getDb() {
     return db;
+  }
+
+  public boolean isGzip() {
+    return gzip;
   }
 
   //Helper methods to automatically cast db to proper database class

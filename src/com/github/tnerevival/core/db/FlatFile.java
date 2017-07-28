@@ -12,15 +12,17 @@ import java.io.File;
 public class FlatFile extends Database {
 
   private String file;
+  private boolean gzip = true;
   private FlatFileConnection connection;
 
-  public FlatFile(String directory, String file) {
-    this(directory + File.separator + file);
+  public FlatFile(String directory, String file, boolean gzip) {
+    this(directory + File.separator + file, gzip);
   }
 
-  public FlatFile(String file) {
+  public FlatFile(String file, boolean gzip) {
     this.file = file;
-    connection = new FlatFileConnection(file);
+    this.gzip = gzip;
+    connection = new FlatFileConnection(file, gzip);
   }
 
   @Override
@@ -31,7 +33,7 @@ public class FlatFile extends Database {
   @Override
   public void connect() {
     if(connection == null) {
-      connection = new FlatFileConnection(file);
+      connection = new FlatFileConnection(file, gzip);
     }
   }
 

@@ -31,7 +31,7 @@ public abstract class Version {
         db = new SQLite(sqlManager.getSqliteFile());
         break;
       default:
-        db = new FlatFile(TNELib.instance().getDataFolder() + File.separator + sqlManager.getFlatfile());
+        db = new FlatFile(TNELib.instance().getDataFolder() + File.separator + sqlManager.getFlatfile(), sqlManager.isGzip());
     }
   }
 

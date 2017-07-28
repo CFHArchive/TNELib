@@ -20,6 +20,7 @@ import com.github.tnerevival.commands.CommandManager;
 import com.github.tnerevival.commands.TNECommand;
 import com.github.tnerevival.core.api.TNEAPI;
 import com.github.tnerevival.core.configurations.ConfigurationManager;
+import com.github.tnerevival.menu.MenuManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -49,6 +50,7 @@ public class TNELib extends JavaPlugin {
 
   private static ConfigurationManager configurations;
   private CommandManager commandManager;
+  private MenuManager menuManager;
 
   /*
    * Database settings
@@ -72,6 +74,8 @@ public class TNELib extends JavaPlugin {
 
     configurations = new ConfigurationManager();
     commandManager = new CommandManager();
+
+    menuManager = new MenuManager();
 
     defaultWorld = Bukkit.getServer().getWorlds().get(0).getName();
   }
@@ -123,6 +127,10 @@ public class TNELib extends JavaPlugin {
 
   public static TNELib instance() {
     return instance;
+  }
+
+  public static MenuManager menuManager() {
+    return instance().menuManager;
   }
 
   public TNEAPI api() {

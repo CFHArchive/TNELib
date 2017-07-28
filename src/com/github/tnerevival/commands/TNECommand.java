@@ -33,7 +33,8 @@ public abstract class TNECommand {
   }
 
   public String[] getHelpLines() {
-    return new String[] { getHelp() };
+    Message message = new Message(getHelp());
+    return message.grabWithNew(TNELib.instance().defaultWorld, null);
   }
 
   public void help(CommandSender sender) {
