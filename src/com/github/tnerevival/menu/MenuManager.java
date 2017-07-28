@@ -37,4 +37,8 @@ public class MenuManager {
   public void removeViewer(UUID id) {
     viewers.remove(id);
   }
+
+  public MenuViewer getViewer(UUID id) {
+    return viewers.get(id);
+  }
 }
