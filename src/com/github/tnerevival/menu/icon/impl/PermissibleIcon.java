@@ -12,8 +12,8 @@ public abstract class PermissibleIcon extends MenuIcon {
 
   protected String permission;
 
-  public PermissibleIcon(Integer slot, ItemStack stack, String permission) {
-    super(slot, stack);
+  public PermissibleIcon(Integer slot, ItemStack stack, String screen, String permission) {
+    super(slot, stack, screen);
     this.permission = permission;
   }
 

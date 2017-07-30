@@ -12,8 +12,8 @@ public class MessageIcon extends PermissibleIcon {
 
   private String message;
 
-  public MessageIcon(Integer slot, ItemStack stack, String message, String permission) {
-    super(slot, stack, permission);
+  public MessageIcon(Integer slot, ItemStack stack, String screen, String message, String permission) {
+    super(slot, stack, screen, permission);
     this.message = message;
   }
 

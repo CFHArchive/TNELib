@@ -11,10 +11,12 @@ public abstract class MenuIcon {
 
   protected Integer slot;
   protected ItemStack stack;
+  protected String screen;
 
-  public MenuIcon(Integer slot, ItemStack stack) {
+  public MenuIcon(Integer slot, ItemStack stack, String screen) {
     this.slot = slot;
     this.stack = stack;
+    this.screen = screen;
   }
 
   public abstract boolean onClick(Player player);
@@ -25,5 +27,9 @@ public abstract class MenuIcon {
 
   public ItemStack getStack() {
     return stack;
+  }
+
+  public String getScreen() {
+    return screen;
   }
 }

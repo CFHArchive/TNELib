@@ -41,4 +41,12 @@ public class MenuManager {
   public MenuViewer getViewer(UUID id) {
     return viewers.get(id);
   }
+
+  public void addMenu(ScreenHolder menu) {
+    menus.put(menu.getName(), menu);
+  }
+
+  public ScreenHolder getHolder(String name) {
+    return menus.get(name);
+  }
 }

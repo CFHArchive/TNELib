@@ -49,8 +49,8 @@ public class TNELib extends JavaPlugin {
   public static final Pattern uuidCreator = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
 
   private static ConfigurationManager configurations;
-  private CommandManager commandManager;
-  private MenuManager menuManager;
+  protected CommandManager commandManager;
+  protected MenuManager menuManager;
 
   /*
    * Database settings

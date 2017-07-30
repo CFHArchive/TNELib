@@ -15,8 +15,8 @@ public class ScreenIcon extends PermissibleIcon {
 
   private String screen;
 
-  public ScreenIcon(Integer slot, ItemStack stack, String permission, String screen) {
-    super(slot, stack, permission);
+  public ScreenIcon(Integer slot, ItemStack stack, String parentScreen, String permission, String screen) {
+    super(slot, stack, parentScreen, permission);
     this.screen = screen;
   }
 

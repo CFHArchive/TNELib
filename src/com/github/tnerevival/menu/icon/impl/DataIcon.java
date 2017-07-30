@@ -17,8 +17,8 @@ public class DataIcon extends PermissibleIcon {
   private String name;
   private Object value;
 
-  public DataIcon(Integer slot, ItemStack stack, String permission, String name, Object value) {
-    super(slot, stack, permission);
+  public DataIcon(Integer slot, ItemStack stack, String screen, String permission, String name, Object value) {
+    super(slot, stack, screen, permission);
     this.name = name;
     this.value = value;
   }
