@@ -19,9 +19,9 @@ public abstract class MenuScreen extends IconHolder {
     UUID id = IDFinder.getID(player);
 
     player.openInventory(getInventory());
-    MenuViewer viewer = TNELib.menuManager().getViewer(id);
+    MenuViewer viewer = TNELib.instance().menuManager().getViewer(id);
     viewer.setCurrentMenu(getName());
-    TNELib.menuManager().addViewer(viewer);
+    TNELib.instance().menuManager().addViewer(viewer);
   }
 
   public void onOpen(Player player) {

@@ -23,7 +23,8 @@ public class ScreenIcon extends PermissibleIcon {
   @Override
   public boolean onClick(Player player) {
     UUID id = IDFinder.getID(player);
-    TNELib.menuManager().getHolder(id).getScreens().get(screen).open(player);
+    System.out.println("Screen icon for " + screen);
+    TNELib.instance().menuManager().getHolder(id).getScreens().get(screen).open(player);
     return true;
   }
 }

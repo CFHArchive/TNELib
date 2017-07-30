@@ -75,8 +75,6 @@ public class TNELib extends JavaPlugin {
     configurations = new ConfigurationManager();
     commandManager = new CommandManager();
 
-    menuManager = new MenuManager();
-
     defaultWorld = Bukkit.getServer().getWorlds().get(0).getName();
   }
 
@@ -129,8 +127,8 @@ public class TNELib extends JavaPlugin {
     return instance;
   }
 
-  public static MenuManager menuManager() {
-    return instance().menuManager;
+  public MenuManager menuManager() {
+    return menuManager;
   }
 
   public TNEAPI api() {

@@ -1,6 +1,7 @@
 package com.github.tnerevival.core.api;
 
 import com.github.tnerevival.TNELib;
+import com.github.tnerevival.user.IDFinder;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -18,7 +19,8 @@ public class MojangAPI {
       return TNELib.uuidCache.get(name);
     }
     JSONObject object = send("https://api.mojang.com/users/profiles/minecraft/" + name);
-    UUID id = UUID.fromString(dashUUID(object.get("id").toString()));
+    UUID id = (object != null && object.containsKey("id")) ? UUID.fromString(dashUUID(object.get("id").toString())) : IDFinder.ecoID(name, true);
+
 
     if(id != null) {
       TNELib.uuidCache.put(name, id);

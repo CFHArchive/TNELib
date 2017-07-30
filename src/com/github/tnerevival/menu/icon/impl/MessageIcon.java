@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
  **/
 public class MessageIcon extends PermissibleIcon {
 
-  private String message;
+  protected String message;
 
   public MessageIcon(Integer slot, ItemStack stack, String screen, String message, String permission) {
     super(slot, stack, screen, permission);

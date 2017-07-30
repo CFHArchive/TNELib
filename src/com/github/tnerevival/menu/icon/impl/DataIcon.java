@@ -26,9 +26,9 @@ public class DataIcon extends PermissibleIcon {
   @Override
   public boolean onClick(Player player) {
     UUID id = IDFinder.getID(player);
-    MenuViewer viewer = TNELib.menuManager().getViewer(id);
+    MenuViewer viewer = TNELib.instance().menuManager().getViewer(id);
     viewer.setData(name, value);
-    TNELib.menuManager().addViewer(viewer);
+    TNELib.instance().menuManager().addViewer(viewer);
     return true;
   }
 }
