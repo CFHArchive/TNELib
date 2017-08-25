@@ -24,11 +24,11 @@ import java.util.UUID;
 /**
  * Created by creatorfromhell on 11/29/2016.
  **/
-public class TNEAPI {
+public class TNELibAPI {
 
   public TNELib plugin;
 
-  public TNEAPI(TNELib plugin) {
+  public TNELibAPI(TNELib plugin) {
     this.plugin = plugin;
   }
 

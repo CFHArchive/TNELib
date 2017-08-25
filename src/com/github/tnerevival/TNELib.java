@@ -18,7 +18,7 @@ package com.github.tnerevival;
 
 import com.github.tnerevival.commands.CommandManager;
 import com.github.tnerevival.commands.TNECommand;
-import com.github.tnerevival.core.api.TNEAPI;
+import com.github.tnerevival.core.api.TNELibAPI;
 import com.github.tnerevival.core.configurations.ConfigurationManager;
 import com.github.tnerevival.menu.MenuManager;
 import org.bukkit.Bukkit;
@@ -41,7 +41,7 @@ public class TNELib extends JavaPlugin {
   public List<UUID> special = new ArrayList<>();
 
   protected static TNELib instance;
-  protected TNEAPI api;
+  protected TNELibAPI api;
 
 
 
@@ -70,7 +70,7 @@ public class TNELib extends JavaPlugin {
   public void onEnable() {
     instance = this;
 
-    api = new TNEAPI(this);
+    api = new TNELibAPI(this);
 
     configurations = new ConfigurationManager();
     commandManager = new CommandManager();
@@ -131,7 +131,7 @@ public class TNELib extends JavaPlugin {
     return menuManager;
   }
 
-  public TNEAPI api() {
+  public TNELibAPI api() {
     return api;
   }
 

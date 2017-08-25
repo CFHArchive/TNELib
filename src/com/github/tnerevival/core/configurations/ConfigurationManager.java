@@ -106,11 +106,7 @@ public class ConfigurationManager {
   }
 
   public Object getValue(String node) {
-    String[] exploded = node.split("\\.");
-    String prefix = "Core";
-    if(containsPrefix(exploded[0])) {
-      prefix = exploded[0];
-    }
+    String prefix = getPrefix(node);
     return getConfiguration(fromPrefix(prefix)).getValue(node);
   }
 
@@ -119,11 +115,7 @@ public class ConfigurationManager {
   }
 
   public void setValue(String node, Object value) {
-    String[] exploded = node.split("\\.");
-    String prefix = "Core";
-    if(containsPrefix(exploded[0])) {
-      prefix = exploded[0];
-    }
+    String prefix = getPrefix(node);
     getConfiguration(fromPrefix(prefix)).setValue(node, value);
   }
 
@@ -192,11 +184,7 @@ public class ConfigurationManager {
   }
 
   public void setConfiguration(String configuration, Object value) {
-    String[] exploded = configuration.split("\\.");
-    String prefix = "Core";
-    if(containsPrefix(exploded[0])) {
-      prefix = exploded[0];
-    }
+    String prefix = getPrefix(configuration);
     setValue(configuration, fromPrefix(prefix), value);
   }
 
@@ -225,5 +213,14 @@ public class ConfigurationManager {
       }
     }
     return "main";
+  }
+
+  public String getPrefix(String node) {
+    String[] exploded = node.split("\\.");
+    String prefix = "Core";
+    if(this.containsPrefix(exploded[0]).booleanValue()) {
+      prefix = exploded[0];
+    }
+    return prefix;
   }
 }
