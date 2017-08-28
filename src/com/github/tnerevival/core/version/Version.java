@@ -3,6 +3,9 @@ package com.github.tnerevival.core.version;
 import com.github.tnerevival.TNELib;
 import com.github.tnerevival.core.SQLManager;
 import com.github.tnerevival.core.db.*;
+import com.github.tnerevival.core.db.sql.H2;
+import com.github.tnerevival.core.db.sql.MySQL;
+import com.github.tnerevival.core.db.sql.SQLite;
 
 import java.io.File;
 

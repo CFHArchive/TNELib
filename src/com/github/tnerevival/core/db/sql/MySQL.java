@@ -1,4 +1,6 @@
-package com.github.tnerevival.core.db;
+package com.github.tnerevival.core.db.sql;
+
+import com.github.tnerevival.core.db.SQLDatabase;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;

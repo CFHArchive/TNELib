@@ -1,5 +1,7 @@
 package com.github.tnerevival.core.db;
 
+import com.github.tnerevival.core.db.sql.SQLResult;
+
 import java.sql.*;
 import java.util.TreeMap;
 

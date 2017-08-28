@@ -1,20 +1,23 @@
-package com.github.tnerevival.core.db;
+package com.github.tnerevival.core.db.sql;
+
+import com.github.tnerevival.core.db.SQLDatabase;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class H2 extends SQLDatabase {
+/**
+ * 
+ * @author Daniel Vidmar aka creatorfromhell
+ *
+ */
+public class SQLite extends SQLDatabase {
 
   private String file;
-  private String user;
-  private String password;
 
-  public H2(String file, String user, String password) {
+  public SQLite(String file) {
     this.file = file;
-    this.user = user;
-    this.password = password;
     connection = null;
   }
 
@@ -30,10 +33,10 @@ public class H2 extends SQLDatabase {
       }
     }
     try {
-      Class.forName("org.h2.Driver");
-      connection = DriverManager.getConnection("jdbc:h2:" + file + ";mode=MySQL", user, password);
+      Class.forName("org.sqlite.JDBC");
+      connection = DriverManager.getConnection("jdbc:sqlite:" + file);
     } catch (SQLException e) {
-      System.out.println("Unable to connect to H2.");
+      System.out.println("Unable to connect to SQLite.");
       e.printStackTrace();
     } catch (ClassNotFoundException e) {
       System.out.println("Unable to find JBDC File.");

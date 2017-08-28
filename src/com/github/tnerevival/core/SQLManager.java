@@ -18,6 +18,9 @@ package com.github.tnerevival.core;
 
 import com.github.tnerevival.TNELib;
 import com.github.tnerevival.core.db.*;
+import com.github.tnerevival.core.db.sql.H2;
+import com.github.tnerevival.core.db.sql.MySQL;
+import com.github.tnerevival.core.db.sql.SQLite;
 
 /**
  * Created by creatorfromhell on 1/16/2017.
