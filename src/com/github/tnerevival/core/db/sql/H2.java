@@ -1,5 +1,6 @@
 package com.github.tnerevival.core.db.sql;
 
+import com.github.tnerevival.core.DataManager;
 import com.github.tnerevival.core.db.SQLDatabase;
 
 import java.io.File;
@@ -13,15 +14,12 @@ public class H2 extends SQLDatabase {
   private String user;
   private String password;
 
-  public H2(String file, String user, String password) {
-    this.file = file;
-    this.user = user;
-    this.password = password;
-    connection = null;
+  public H2(DataManager manager) {
+    super(manager);
   }
 
   @Override
-  public void connect() {
+  public void connect(DataManager manager) {
     File db = new File(file);
     if(!db.exists()) {
       try {

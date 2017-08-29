@@ -1,37 +1,40 @@
 package com.github.tnerevival.core.db;
 
+import com.github.tnerevival.core.DataManager;
 import com.github.tnerevival.core.db.sql.SQLResult;
 
 import java.sql.*;
 import java.util.TreeMap;
 
-public abstract class SQLDatabase extends Database {
+public abstract class SQLDatabase implements DatabaseConnector {
 
   private TreeMap<Integer, SQLResult> results = new TreeMap<>();
   protected Connection connection;
+  protected DataManager manager;
 
-  @Override
-  public abstract void connect();
+  public SQLDatabase(DataManager manager) {
+    this.manager = manager;
+  }
 
-  @Override
-  public Boolean connected() {
+  public abstract void connect(DataManager manager);
+
+  public Boolean connected(DataManager manager) {
     return connection != null;
   }
 
-  @Override
-  public Connection connection() {
-    if(!connected()) {
-      connect();
+  public Connection connection(DataManager manager) {
+    if(!connected(manager)) {
+      connect(manager);
     }
     return connection;
   }
 
   public int executeQuery(String query) {
-    if(!connected()) {
-      connect();
+    if(!connected(manager)) {
+      connect(manager);
     }
     try {
-      Statement statement = connection().createStatement();
+      Statement statement = connection(manager).createStatement();
       return addResult(statement, statement.executeQuery(query));
     } catch (SQLException e) {
       e.printStackTrace();
@@ -40,11 +43,11 @@ public abstract class SQLDatabase extends Database {
   }
 
   public int executePreparedQuery(String query, Object[] variables) {
-    if(!connected()) {
-      connect();
+    if(!connected(manager)) {
+      connect(manager);
     }
     try {
-      PreparedStatement statement = connection().prepareStatement(query);
+      PreparedStatement statement = connection(manager).prepareStatement(query);
       for(int i = 0; i < variables.length; i++) {
         statement.setObject((i + 1), variables[i]);
       }
@@ -56,11 +59,11 @@ public abstract class SQLDatabase extends Database {
   }
 
   public void executeUpdate(String query) {
-    if(!connected()) {
-      connect();
+    if(!connected(manager)) {
+      connect(manager);
     }
     try {
-      Statement statement = connection().createStatement();
+      Statement statement = connection(manager).createStatement();
       statement.executeUpdate(query);
       statement.close();
     } catch (SQLException e) {
@@ -69,11 +72,11 @@ public abstract class SQLDatabase extends Database {
   }
 
   public void executePreparedUpdate(String query, Object[] variables) {
-    if(!connected()) {
-      connect();
+    if(!connected(manager)) {
+      connect(manager);
     }
     try {
-      PreparedStatement prepared = connection().prepareStatement(query);
+      PreparedStatement prepared = connection(manager).prepareStatement(query);
 
       for(int i = 0; i < variables.length; i++) {
         prepared.setObject((i + 1), variables[i]);
@@ -100,9 +103,8 @@ public abstract class SQLDatabase extends Database {
     results.get(id).close();
   }
 
-  @Override
-  public void close() {
-    if(connected()) {
+  public void close(DataManager manager) {
+    if(connected(manager)) {
       try {
 
         for(SQLResult result : results.values()) {

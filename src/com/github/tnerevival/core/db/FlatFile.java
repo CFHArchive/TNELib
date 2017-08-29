@@ -1,56 +1,35 @@
 package com.github.tnerevival.core.db;
 
+import com.github.tnerevival.core.DataManager;
 import com.github.tnerevival.core.db.flat.FlatFileConnection;
-
-import java.io.File;
 
 /**
  * 
  * @author Daniel Vidmar aka creatorfromhell
  *
  */
-public class FlatFile extends Database {
+public class FlatFile implements DatabaseConnector {
 
-  private String file;
-  private boolean gzip = true;
   private FlatFileConnection connection;
 
-  public FlatFile(String directory, String file, boolean gzip) {
-    this(directory + File.separator + file, gzip);
-  }
-
-  public FlatFile(String file, boolean gzip) {
-    this.file = file;
-    this.gzip = gzip;
-    connection = new FlatFileConnection(file, gzip);
-  }
-
-  @Override
-  public Boolean connected() {
+  public Boolean connected(DataManager manager) {
     return true;
   }
 
-  @Override
-  public void connect() {
+  public void connect(DataManager manager) {
     if(connection == null) {
-      connection = new FlatFileConnection(file, gzip);
+      connection = new FlatFileConnection(manager.getFile(), manager.isCompress());
     }
   }
 
-  @Override
-  public FlatFileConnection connection() {
-    if(connection == null || !connected()) {
-      connect();
+  public FlatFileConnection connection(DataManager manager) {
+    if(connection == null || !connected(manager)) {
+      connect(manager);
     }
     return connection;
   }
 
-  @Override
-  public void close() {
+  public void close(DataManager manager) {
     connection.close();
-  }
-
-  public File getFile() {
-    return new File(this.file);
   }
 }

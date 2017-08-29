@@ -18,6 +18,7 @@ package com.github.tnerevival;
 
 import com.github.tnerevival.commands.CommandManager;
 import com.github.tnerevival.commands.TNECommand;
+import com.github.tnerevival.core.SaveManager;
 import com.github.tnerevival.core.api.TNELibAPI;
 import com.github.tnerevival.core.configurations.ConfigurationManager;
 import com.github.tnerevival.menu.MenuManager;
@@ -42,6 +43,7 @@ public class TNELib extends JavaPlugin {
 
   protected static TNELib instance;
   protected TNELibAPI api;
+  protected SaveManager saveManager;
 
 
 
@@ -55,13 +57,9 @@ public class TNELib extends JavaPlugin {
   /*
    * Database settings
    */
-  public String saveFormat = "flatfile";
-  public boolean directSQL = true;
-  public boolean cache = true;
   public boolean debugMode = false;
   public boolean useUUID = true;
   public String consoleName = "Server Name";
-  public long update = 600;
 
   public Double currentSaveVersion = 0.0;
   public String defaultWorld = "Default";
@@ -137,6 +135,10 @@ public class TNELib extends JavaPlugin {
 
   public static ConfigurationManager configurations() {
     return configurations;
+  }
+
+  public SaveManager getSaveManager() {
+    return saveManager;
   }
 
   public static void debug(String message) {

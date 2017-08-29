@@ -1,5 +1,6 @@
 package com.github.tnerevival.core.db.sql;
 
+import com.github.tnerevival.core.DataManager;
 import com.github.tnerevival.core.db.SQLDatabase;
 
 import java.sql.DriverManager;
@@ -17,17 +18,12 @@ public class MySQL extends SQLDatabase {
   private String user;
   private String password;
 
-  public MySQL(String host, Integer port, String database, String user, String password) {
-    this.host = host;
-    this.port = port;
-    this.database = database;
-    this.user = user;
-    this.password = password;
-    connection = null;
+  public MySQL(DataManager manager) {
+    super(manager);
   }
 
   @Override
-  public void connect() {
+  public void connect(DataManager manager) {
     try {
       Class.forName("com.mysql.jdbc.Driver");
       connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/"  + database + "?useSSL=false", user, password);

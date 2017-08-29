@@ -1,5 +1,6 @@
 package com.github.tnerevival.core.db.sql;
 
+import com.github.tnerevival.core.DataManager;
 import com.github.tnerevival.core.db.SQLDatabase;
 
 import java.io.File;
@@ -16,13 +17,12 @@ public class SQLite extends SQLDatabase {
 
   private String file;
 
-  public SQLite(String file) {
-    this.file = file;
-    connection = null;
+  public SQLite(DataManager manager) {
+    super(manager);
   }
 
   @Override
-  public void connect() {
+  public void connect(DataManager manager) {
     File db = new File(file);
     if(!db.exists()) {
       try {
