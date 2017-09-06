@@ -16,7 +16,7 @@
  */
 package com.github.tnerevival.core;
 
-import com.github.tnerevival.core.db.Database;
+import com.github.tnerevival.core.db.DataProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +25,7 @@ import java.util.Map;
  * Created by creatorfromhell on 1/16/2017.
  **/
 public class DataManager {
-  protected Map<String, Database> providers = new HashMap<>();
+  protected Map<String, DataProvider> providers = new HashMap<>();
 
   protected String format;
   protected String host;
@@ -55,20 +55,26 @@ public class DataManager {
     this.compress = compress;
   }
 
-  public Map<String, Database> getProviders() {
+  public Map<String, DataProvider> getProviders() {
     return providers;
   }
 
-  public boolean registerProvider(String identifier, Class<? extends Database> provider) {
-    Database instance = null;
+  public boolean registerProvider(Class<? extends DataProvider> provider) {
+    DataProvider instance = null;
     try {
       instance = provider.getDeclaredConstructor(DataManager.class).newInstance(this);
     } catch (Exception e) {
       e.printStackTrace();
     }
     if(instance == null) return false;
-    this.providers.put(identifier, instance);
+    this.providers.put(instance.identifier(), instance);
     return true;
+  }
+
+  public void registerProviders(HashMap<String, Class<? extends DataProvider>> providers) {
+    for(Class<? extends DataProvider> provider : providers.values()) {
+      registerProvider(provider);
+    }
   }
 
   public String getHost() {
@@ -119,7 +125,7 @@ public class DataManager {
     return compress;
   }
 
-  public Database getDb() {
+  public DataProvider getDb() {
     return providers.get(format);
   }
 }

@@ -7,14 +7,15 @@ import com.github.tnerevival.core.DataManager;
  * @author Daniel Vidmar aka creatorfromhell
  *
  */
-public abstract class Database {
+public abstract class DataProvider {
 
   protected DataManager manager;
 
-  public Database(DataManager manager) {
+  public DataProvider(DataManager manager) {
     this.manager = manager;
   }
 
+  public abstract String identifier();
   public abstract boolean supportUpdate();
   public abstract Boolean first();
   public abstract Double version();

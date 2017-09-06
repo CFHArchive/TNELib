@@ -55,7 +55,7 @@ public class TNELib extends JavaPlugin {
   protected MenuManager menuManager;
 
   /*
-   * Database settings
+   * DataProvider settings
    */
   public boolean debugMode = false;
   public boolean useUUID = true;
