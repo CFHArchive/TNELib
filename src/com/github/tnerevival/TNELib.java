@@ -38,7 +38,6 @@ import java.util.regex.Pattern;
  **/
 public class TNELib extends JavaPlugin {
 
-  public Map<String, UUID> offlineIDS = new HashMap<>();
   public List<UUID> special = new ArrayList<>();
 
   protected static TNELib instance;
@@ -73,7 +72,11 @@ public class TNELib extends JavaPlugin {
     configurations = new ConfigurationManager();
     commandManager = new CommandManager();
 
-    defaultWorld = Bukkit.getServer().getWorlds().get(0).getName();
+    if(Bukkit.getWorlds().size() >= 1) {
+      defaultWorld = Bukkit.getServer().getWorlds().get(0).getName();
+    } else {
+      defaultWorld = "world";
+    }
   }
 
   public CommandManager getCommandManager() {
@@ -139,6 +142,10 @@ public class TNELib extends JavaPlugin {
 
   public SaveManager getSaveManager() {
     return saveManager;
+  }
+
+  public Map<String, UUID> getOffline() {
+    return new HashMap<>();
   }
 
   public static void debug(String message) {

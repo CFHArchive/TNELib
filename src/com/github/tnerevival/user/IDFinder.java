@@ -37,21 +37,21 @@ public class IDFinder {
   }
 
   public static UUID ecoID(String username, boolean skip) {
-    for(String s : TNELib.instance().offlineIDS.keySet()) {
+    for(String s : TNELib.instance().getOffline().keySet()) {
       if(s.equalsIgnoreCase(username)) {
-        return TNELib.instance().offlineIDS.get(s);
+        return TNELib.instance().getOffline().get(s);
       }
     }
     UUID eco = (skip)? genUUID() : genUUID(username);
-    TNELib.instance().offlineIDS.put(username, eco);
+    TNELib.instance().getOffline().put(username, eco);
     return eco;
   }
 
   public static String getUsername(String identifier) {
     if(isUUID(identifier)) {
       if(getPlayer(identifier) == null) {
-        if(getOffline(identifier) != null) {
-          return getOffline(identifier).getName();
+        if(getOffline(identifier, false) != null) {
+          return getOffline(identifier, false).getName();
         }
         return MojangAPI.getPlayerUsername(getID(identifier));
       }
@@ -69,7 +69,7 @@ public class IDFinder {
 
   public static UUID genUUID() {
     UUID id = UUID.randomUUID();
-    while(TNELib.instance().offlineIDS.containsValue(id)) {
+    while(TNELib.instance().getOffline().containsValue(id)) {
       //This should never happen, but we'll play it safe
       id = UUID.randomUUID();
     }
@@ -77,7 +77,7 @@ public class IDFinder {
   }
 
   public static String ecoToUsername(UUID id) {
-    return (Utilities.getKey(TNELib.instance().offlineIDS, id) != null)? (String)Utilities.getKey(TNELib.instance().offlineIDS, id) : getUsername(id.toString());
+    return (Utilities.getKey(TNELib.instance().getOffline(), id) != null)? (String)Utilities.getKey(TNELib.instance().getOffline(), id) : getUsername(id.toString());
   }
 
   public static UUID getID(CommandSender sender) {
@@ -99,16 +99,21 @@ public class IDFinder {
   }
 
   public static Player getPlayer(String identifier) {
-    UUID id = (getID(identifier));
+    UUID id = getID(identifier);
     if(!TNELib.instance().useUUID) {
       return Bukkit.getPlayer(IDFinder.ecoToUsername(id));
     }
     return Bukkit.getPlayer(id);
   }
 
-  public static OfflinePlayer getOffline(String identifier) {
+  private static OfflinePlayer getOffline(String identifier, boolean username) {
+    if(username) return Bukkit.getOfflinePlayer(identifier);
     UUID id = getID(identifier);
 
+    return Bukkit.getOfflinePlayer(id);
+  }
+
+  private static OfflinePlayer getOffline(UUID id) {
     return Bukkit.getOfflinePlayer(id);
   }
 

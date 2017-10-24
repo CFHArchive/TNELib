@@ -12,12 +12,12 @@ import java.util.TreeMap;
  **/
 public class SaveManager {
 
-  private TreeMap<Double, Version> versions = new TreeMap<>();
+  protected TreeMap<Double, Version> versions = new TreeMap<>();
 
-  private Version versionInstance;
-  private DataManager manager;
-  private Double saveVersion = 0.0;
-  private File file;
+  protected Version versionInstance;
+  protected DataManager manager;
+  protected Double saveVersion = 0.0;
+  protected File file;
 
   public SaveManager(DataManager manager) {
     this.manager = manager;
