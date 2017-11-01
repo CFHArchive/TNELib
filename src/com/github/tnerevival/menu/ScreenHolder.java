@@ -26,13 +26,13 @@ public abstract class ScreenHolder extends IconHolder {
 
   public void onOpen(Player player) {
     UUID id = IDFinder.getID(player);
-    player.openInventory(screens.get(getMainMenu()).getInventory());
-    System.out.println("Inventory opened!");
-    TNELib.instance().menuManager().addViewer(new MenuViewer(id, name, getMainMenu()));
+    System.out.println("Will it update?");
+    screens.get(getMainMenu()).open(player);
     System.out.println("Adding menu viewer ID: " + id.toString() + " Total Viewers:" + TNELib.instance().menuManager().getViewers().size());
   }
 
   public void onClick(int slot, Player player) {
+    System.out.println("ScreenHolder > OnClick");
     UUID id = IDFinder.getID(player);
     TNELib.instance().menuManager().getScreen(id).onClick(slot, player);
   }

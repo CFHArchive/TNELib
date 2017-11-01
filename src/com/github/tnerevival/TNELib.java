@@ -93,6 +93,10 @@ public class TNELib extends JavaPlugin {
     commandManager.registerCommands();
   }
 
+  public void unregisterCommand(String[] accessors) {
+    commandManager.unregister(accessors);
+  }
+
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] arguments) {
     TNECommand ecoCommand = commandManager.Find(label);

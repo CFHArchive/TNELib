@@ -1,7 +1,5 @@
 package com.github.tnerevival.menu;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -9,8 +7,6 @@ import java.util.UUID;
  * All rights reserved.
  **/
 public class MenuViewer {
-
-  private Map<String, Object> data = new HashMap<>();
 
   private UUID id;
   private String screenHolder;
@@ -40,21 +36,5 @@ public class MenuViewer {
 
   public void setScreenHolder(String screenHolder) {
     this.screenHolder = screenHolder;
-  }
-
-  public void removeData(String name) {
-    data.remove(name);
-  }
-
-  public Object getData(String name) {
-    return data.get(name);
-  }
-
-  public void setData(String name, Object value) {
-    data.put(name, value);
-  }
-
-  public Map<String, Object> getData() {
-    return data;
   }
 }

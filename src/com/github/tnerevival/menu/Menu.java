@@ -11,9 +11,8 @@ public class Menu extends ScreenHolder {
     super(title, name);
   }
 
+  @Override
   public void onClick(int slot, Player player) {
-    if (icons.containsKey(slot)) {
-      icons.get(slot).onClick(player);
-    }
+    super.onClick(slot, player);
   }
 }

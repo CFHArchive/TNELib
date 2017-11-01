@@ -52,6 +52,12 @@ public class CommandManager {
     }
   }
 
+  public void unregister(String[] accessors) {
+    for(String s : accessors) {
+      unregister(s);
+    }
+  }
+
   private void register(String command) {
     try {
       Constructor<PluginCommand> c = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class);

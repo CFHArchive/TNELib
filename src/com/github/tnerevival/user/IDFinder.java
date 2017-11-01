@@ -103,6 +103,9 @@ public class IDFinder {
     if(!TNELib.instance().useUUID) {
       return Bukkit.getPlayer(IDFinder.ecoToUsername(id));
     }
+    if(!Bukkit.getServer().getOnlineMode()) {
+      return Bukkit.getPlayer(IDFinder.ecoToUsername(id));
+    }
     return Bukkit.getPlayer(id);
   }
 
