@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
  * All rights reserved.
  **/
 public class Menu extends ScreenHolder {
-  public Menu(String title, String name) {
-    super(title, name);
+  public Menu(String title, String name, String main) {
+    super(title, name, main);
   }
 
   @Override

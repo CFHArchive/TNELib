@@ -13,21 +13,22 @@ import java.util.UUID;
  * All rights reserved.
  **/
 public abstract class ScreenHolder extends IconHolder {
-  protected Map<String, MenuScreen> screens = new HashMap<>();
+  private Map<String, MenuScreen> screens = new HashMap<>();
 
   protected String title;
   protected String name;
+  protected String main;
 
-  public ScreenHolder(String title, String name) {
+  public ScreenHolder(String title, String name, String main) {
     this.title = title;
     this.name = name;
+    this.main = main;
   }
 
 
   public void onOpen(Player player) {
     UUID id = IDFinder.getID(player);
-    System.out.println("Will it update?");
-    screens.get(getMainMenu()).open(player);
+    getScreen(main).open(player, name);
     System.out.println("Adding menu viewer ID: " + id.toString() + " Total Viewers:" + TNELib.instance().menuManager().getViewers().size());
   }
 
@@ -43,15 +44,15 @@ public abstract class ScreenHolder extends IconHolder {
   }
 
   public String getMainMenu() {
-    String main = "";
-    for(MenuScreen screen : screens.values()) {
-      if(screen.isMain()) return screen.getName();
-    }
-    return "";
+    return main;
   }
 
-  public Map<String, MenuScreen> getScreens() {
-    return screens;
+  public MenuScreen getScreen(String name) {
+    return screens.get(name).copy();
+  }
+
+  public void addScreen(MenuScreen screen) {
+    screens.put(screen.getName(), screen);
   }
 
   public String getTitle() {

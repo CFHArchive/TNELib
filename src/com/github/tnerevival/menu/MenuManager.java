@@ -44,19 +44,19 @@ public abstract class MenuManager {
     data.get(viewer).setValue(identifier, value);
   }
 
-  public void addSwitching(UUID id) {
-    switching.add(id.toString());
-    System.out.println("addSwitching: " + IDFinder.getUsername(id.toString()));
+  public void addSwitching(String id) {
+    switching.add(id);
+    System.out.println("addSwitching: " + IDFinder.getUsername(id));
   }
 
-  public boolean isSwitching(UUID id) {
-    System.out.println("isSwitching: " + IDFinder.getUsername(id.toString()));
-    return switching.contains(id.toString());
+  public boolean isSwitching(String id) {
+    System.out.println("isSwitching: " + IDFinder.getUsername(id));
+    return switching.contains(id);
   }
 
-  public void removeSwitching(UUID id) {
-    switching.remove(id.toString());
-    System.out.println("removeSwitching: " + IDFinder.getUsername(id.toString()));
+  public void removeSwitching(String id) {
+    switching.remove(id);
+    System.out.println("removeSwitching: " + IDFinder.getUsername(id));
   }
 
   public void switchScreens(Player player, String screen) {
@@ -64,6 +64,6 @@ public abstract class MenuManager {
     System.out.println("Player: " + player);
     System.out.println("Screen null: " + (screen == null));
     System.out.println("Screen: " + screen);
-    getHolder(IDFinder.getID(player)).getScreens().get(screen).open(player, true);
+    getHolder(IDFinder.getID(player)).getScreen(screen).open(player, true);
   }
 }

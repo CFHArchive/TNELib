@@ -14,7 +14,7 @@ import java.util.UUID;
  **/
 public abstract class MenuScreen extends IconHolder {
   public abstract String getName();
-  public abstract boolean isMain();
+  public abstract MenuScreen copy();
 
   public void open(Player player, String holder) {
     System.out.println("=====START MenuScreen.open(player, holder) =====");
@@ -41,12 +41,15 @@ public abstract class MenuScreen extends IconHolder {
     System.out.println("Player: " + id.toString());
     System.out.println("Name null: " + (getName() == null));
     System.out.println("Inventory null: " + (getInventory() == null));
-    TNELib.instance().menuManager().addSwitching(id);
-    if(switching) {
+    TNELib.instance().menuManager().addSwitching(id.toString());
+    player.openInventory(getInventory());
+    /*if(switching) {
+      System.out.println("Inventory copied over");
       player.getOpenInventory().getTopInventory().setContents(getInventory().getContents());
     } else {
+      System.out.println("Inventory opened");
       player.openInventory(getInventory());
-    }
+    }*/
     MenuViewer viewer = TNELib.instance().menuManager().getViewer(id);
     viewer.setCurrentMenu(getName());
     TNELib.instance().menuManager().addViewer(viewer);
