@@ -12,6 +12,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
 
@@ -68,7 +69,10 @@ public class Menu implements Listener {
   }
 
   public Menu addIconBulk(Map<Integer, MenuIcon> bulk) {
-    icons.putAll(bulk);
+    for(MenuIcon icon : bulk.values()) {
+      System.out.println("Adding icon....");
+      icons.put(icon.getSlot(), icon);
+    }
     return this;
   }
 
@@ -84,6 +88,7 @@ public class Menu implements Listener {
 
   public void open(Player player) {
     if(onOpen(player)) {
+      System.out.println("OPEN  Menu: " + getName());
       player.openInventory(getInventory());
       plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
@@ -150,16 +155,23 @@ public class Menu implements Listener {
         }
 
         if(ev.isSwitchMenu()) {
-          final Player p = (Player)event.getWhoClicked();
           Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, ()->{
+            String menu = icons.get(slot).switchMenu();
+            System.out.println("Menu: " + menu);
             close(player);
             player.closeInventory();
+            TNELib.instance().menuManager().switchMenus(menu, player, plugin);
           }, 1L);
-          Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, ()->{
-            TNELib.instance().menuManager().fromName(icons.get(slot).switchMenu()).open(player);
-          }, 2L);
         }
       }
+    }
+  }
+
+  @EventHandler(priority = EventPriority.MONITOR)
+  public void onInventoryClose(InventoryCloseEvent event) {
+    if(event.getInventory().getTitle().equalsIgnoreCase(getTitle())) {
+      Player player = (Player)event.getPlayer();
+      close(player);
     }
   }
 
@@ -169,8 +181,19 @@ public class Menu implements Listener {
                 .addDummyBulk(dummyIcons);
   }
 
-  public Menu copy(String name) {
-    return new Menu(name, title, size, plugin, border)
+  public Menu copy(String newName) {
+    return new Menu(newName, title, size, plugin, border)
+        .addIconBulk(icons)
+        .addDummyBulk(dummyIcons);
+  }
+
+  public Menu copy(String newName, boolean isTitle) {
+    if(isTitle) {
+      return new Menu(name, newName, size, plugin, border)
+          .addIconBulk(icons)
+          .addDummyBulk(dummyIcons);
+    }
+    return new Menu(newName, title, size, plugin, border)
         .addIconBulk(icons)
         .addDummyBulk(dummyIcons);
   }

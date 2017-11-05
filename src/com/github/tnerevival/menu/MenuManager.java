@@ -1,9 +1,13 @@
 package com.github.tnerevival.menu;
 
+import com.github.tnerevival.TNELib;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.Plugin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +53,12 @@ public class MenuManager {
       if(menu.getTitle().equalsIgnoreCase(title)) return true;
     }
     return false;
+  }
+
+  public void switchMenus(String name, Player player, Plugin plugin) {
+    Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, ()->{
+      TNELib.instance().menuManager().fromName(name).copy().open(player);
+    }, 3L);
   }
 
   public Menu fromTitle(String title) {
