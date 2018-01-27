@@ -16,6 +16,7 @@
  */
 package com.github.tnerevival.core.configurations;
 
+import com.github.tnerevival.TNELib;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
@@ -110,8 +111,8 @@ public class ConfigurationManager {
     return getConfiguration(fromPrefix(prefix)).getValue(node);
   }
 
-  public Object getValue(String node, String configuration) {
-    return getConfiguration(configuration).getValue(node);
+  public Object getValue(String node, String configuration, String world, String player) {
+    return getConfiguration(configuration).getValue(node, world, player);
   }
 
   public void setValue(String node, Object value) {
@@ -152,11 +153,11 @@ public class ConfigurationManager {
   }
 
   public Integer getInt(String node, String configID) {
-    return (Integer)getValue(node, configID);
+    return (Integer)getValue(node, configID, TNELib.instance().defaultWorld, "");
   }
 
   public Double getDouble(String node, String configID) {
-    return (Double)getValue(node, configID);
+    return (Double)getValue(node, configID, TNELib.instance().defaultWorld, "");
   }
 
   public Long getLong(String node, String configID) {
@@ -164,7 +165,11 @@ public class ConfigurationManager {
   }
 
   public String getString(String node, String configID) {
-    return (String)getValue(node, configID);
+    return (String)getValue(node, configID, TNELib.instance().defaultWorld, "");
+  }
+
+  public String getString(String node, String configID, String world, String player) {
+    return (String)getValue(node, configID, world, player);
   }
 
   /*
@@ -180,7 +185,7 @@ public class ConfigurationManager {
         path = path.replace(prefix + ".", "");
       }
     }
-    return getValue(configuration, fromPrefix(prefix));
+    return getValue(configuration, fromPrefix(prefix), world, player);
   }
 
   public void setConfiguration(String configuration, Object value) {

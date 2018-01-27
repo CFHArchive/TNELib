@@ -55,6 +55,14 @@ public abstract class Configuration {
     return configurations.get(node);
   }
 
+  public Object getValue(String node, String world) {
+    return getValue(node);
+  }
+
+  public Object getValue(String node, String world, String player) {
+    return getValue(node);
+  }
+
   public void setValue(String node, Object value) {
     modified.put(node, value);
     configurations.put(node, value);
