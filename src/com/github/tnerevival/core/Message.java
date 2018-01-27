@@ -90,10 +90,28 @@ public class Message {
 
   public String[] grabWithNew(String world, CommandSender sender) {
     String id = (sender instanceof Player)? IDFinder.getID((Player)sender).toString() : "";
+    return format(world, sender, id);
+  }
+
+  public void translate(String world, CommandSender sender) {
+    if(sender == null) return;
+    String id = (sender instanceof Player)? IDFinder.getID((Player)sender).toString() : "";
+    translate(world, sender, id);
+  }
+
+  public void translate(String world, CommandSender sender, String id) {
+    if(sender == null) return;
+    String[] message = format(world, sender, id);
+
+    for(String s : message) {
+      sender.sendMessage(s);
+    }
+  }
+
+  public String[] format(String world, CommandSender sender, String id) {
     String found = TNELib.instance().api().getString(this.node, world, id);
 
     String[] message = (found == null)? new String[] { this.node } : found.split("<newline>");
-
     String[] formatted = new String[message.length];
 
     for(int i = 0; i < message.length; i++) {
@@ -110,26 +128,5 @@ public class Message {
       formatted[i] = replaceColours(send, strip);
     }
     return formatted;
-  }
-
-  public void translate(String world, CommandSender sender) {
-    if(sender == null) return;
-    String id = (sender instanceof Player)? IDFinder.getID((Player)sender).toString() : "";
-    String found = TNELib.instance().api().getString(this.node, world, id);
-
-    String[] message = (found == null)? new String[] { this.node } : found.split("<newline>");
-    for(String s : message) {
-      String send = s;
-      if (!send.equals(this.node)) {
-        Iterator<java.util.Map.Entry<String, String>> it = variables.entrySet().iterator();
-
-        while (it.hasNext()) {
-          java.util.Map.Entry<String, String> entry = it.next();
-          send = send.replace(entry.getKey(), entry.getValue());
-        }
-      }
-      Boolean strip = !(sender instanceof Player);
-      sender.sendMessage(replaceColours(send, strip));
-    }
   }
 }

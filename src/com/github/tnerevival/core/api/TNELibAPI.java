@@ -33,8 +33,8 @@ public class TNELibAPI {
   }
 
   public UUID getID(String identifier) {
-    return IDFinder.getID(identifier);
-  }
+  return IDFinder.getID(identifier);
+}
 
   /*
    * Configuration-related Methods.

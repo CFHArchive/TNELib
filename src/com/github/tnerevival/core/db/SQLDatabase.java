@@ -113,7 +113,6 @@ public abstract class SQLDatabase implements DatabaseConnector {
         connection.close();
         connection = null;
       } catch (SQLException e) {
-        System.out.println("There was an error closing the MySQL Connection.");
         e.printStackTrace();
       }
     }

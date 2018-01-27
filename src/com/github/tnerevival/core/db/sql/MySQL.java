@@ -12,11 +12,6 @@ import java.sql.SQLException;
  *
  */
 public class MySQL extends SQLDatabase {
-  private String host;
-  private Integer port;
-  private String database;
-  private String user;
-  private String password;
 
   public MySQL(DataManager manager) {
     super(manager);
@@ -24,14 +19,19 @@ public class MySQL extends SQLDatabase {
 
   @Override
   public void connect(DataManager manager) {
+    if(connection != null) {
+      try {
+        connection.close();
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
     try {
       Class.forName("com.mysql.jdbc.Driver");
-      connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/"  + database + "?useSSL=false", user, password);
+      connection = DriverManager.getConnection("jdbc:mysql://" + manager.getHost() + ":" + manager.getPort() + "/"  + manager.getDatabase() + "?useSSL=false", manager.getUser(), manager.getPassword());
     } catch (SQLException e) {
-      System.out.println("Unable to connect to MySQL.");
       e.printStackTrace();
     } catch (ClassNotFoundException e) {
-      System.out.println("Unable to find JBDC File.");
       e.printStackTrace();
     }
   }

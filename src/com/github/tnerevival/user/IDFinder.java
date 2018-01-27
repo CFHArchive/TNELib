@@ -18,7 +18,6 @@ package com.github.tnerevival.user;
 
 import com.github.tnerevival.TNELib;
 import com.github.tnerevival.core.api.MojangAPI;
-import com.github.tnerevival.core.utils.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -37,13 +36,11 @@ public class IDFinder {
   }
 
   public static UUID ecoID(String username, boolean skip) {
-    for(String s : TNELib.instance().getOffline().keySet()) {
-      if(s.equalsIgnoreCase(username)) {
-        return TNELib.instance().getOffline().get(s);
-      }
+    if(TNELib.instance().getUuidManager().hasID(username)) {
+      return TNELib.instance().getUuidManager().getID(username);
     }
     UUID eco = (skip)? genUUID() : genUUID(username);
-    TNELib.instance().getOffline().put(username, eco);
+    TNELib.instance().getUuidManager().addUUID(username, eco);
     return eco;
   }
 
@@ -69,7 +66,7 @@ public class IDFinder {
 
   public static UUID genUUID() {
     UUID id = UUID.randomUUID();
-    while(TNELib.instance().getOffline().containsValue(id)) {
+    while(TNELib.instance().getUuidManager().containsUUID(id)) {
       //This should never happen, but we'll play it safe
       id = UUID.randomUUID();
     }
@@ -77,7 +74,7 @@ public class IDFinder {
   }
 
   public static String ecoToUsername(UUID id) {
-    return (Utilities.getKey(TNELib.instance().getOffline(), id) != null)? (String)Utilities.getKey(TNELib.instance().getOffline(), id) : getUsername(id.toString());
+    return (TNELib.instance().getUuidManager().containsUUID(id))? TNELib.instance().getUuidManager().getUsername(id) : getUsername(id.toString());
   }
 
   public static UUID getID(CommandSender sender) {
@@ -127,21 +124,21 @@ public class IDFinder {
       return UUID.fromString(identifier);
     }
 
-    if(identifier.contains("faction-")) {
+    if(identifier.contains(TNELib.instance().factionPrefix)) {
       TNELib.debug("Faction");
       UUID id = ecoID(identifier);
       checkSpecial(id);
       return id;
     }
 
-    if(identifier.contains("town-")) {
+    if(identifier.contains(TNELib.instance().townPrefix)) {
       TNELib.debug("Towny Town");
       UUID id = ecoID(identifier);
       checkSpecial(id);
       return id;
     }
 
-    if(identifier.contains("nation-")) {
+    if(identifier.contains(TNELib.instance().nationPrefix)) {
       TNELib.debug("Towny Nation");
       UUID id = ecoID(identifier);
       checkSpecial(id);
@@ -158,6 +155,7 @@ public class IDFinder {
       TNELib.debug("MOJANG API RETURNED NULL VALUE");
       return ecoID(identifier);
     }
+    TNELib.instance().getUuidManager().addUUID(identifier, mojangID);
     return mojangID;
   }
 

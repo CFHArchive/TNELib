@@ -218,7 +218,7 @@ public class ConfigurationManager {
   public String getPrefix(String node) {
     String[] exploded = node.split("\\.");
     String prefix = "Core";
-    if(this.containsPrefix(exploded[0]).booleanValue()) {
+    if(this.containsPrefix(exploded[0])) {
       prefix = exploded[0];
     }
     return prefix;

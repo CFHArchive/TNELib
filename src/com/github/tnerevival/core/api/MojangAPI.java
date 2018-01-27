@@ -9,39 +9,34 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Map;
 import java.util.UUID;
 
 public class MojangAPI {
 
   public static UUID getPlayerUUID(String name) {
-    if(TNELib.uuidCache.containsKey(name)) {
-      return TNELib.uuidCache.get(name);
+    if(TNELib.instance().getUuidManager().hasID(name)) {
+      return TNELib.instance().getUuidManager().getID(name);
     }
     JSONObject object = send("https://api.mojang.com/users/profiles/minecraft/" + name);
     UUID id = (object != null && object.containsKey("id")) ? UUID.fromString(dashUUID(object.get("id").toString())) : IDFinder.ecoID(name, true);
 
 
     if(id != null) {
-      TNELib.uuidCache.put(name, id);
+      TNELib.instance().getUuidManager().addUUID(name, id);
     }
 
     return id;
   }
 
   public static String getPlayerUsername(UUID id) {
-    if(TNELib.uuidCache.containsValue(id)) {
-      for(Map.Entry<String, UUID> entry : TNELib.uuidCache.entrySet()) {
-        if(entry.getValue().equals(id)) {
-          return entry.getKey();
-        }
-      }
+    if(TNELib.instance().getUuidManager().containsUUID(id)) {
+      return TNELib.instance().getUuidManager().getUsername(id);
     }
     JSONObject object = send("https://sessionserver.mojang.com/session/minecraft/profile/" + id.toString().replace("-", ""));
     String name = object.get("name").toString();
 
     if(name != null) {
-      TNELib.uuidCache.put(name, id);
+      TNELib.instance().getUuidManager().addUUID(name, id);
     }
     return name;
   }

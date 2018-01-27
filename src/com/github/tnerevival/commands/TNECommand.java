@@ -2,6 +2,7 @@ package com.github.tnerevival.commands;
 
 import com.github.tnerevival.TNELib;
 import com.github.tnerevival.core.Message;
+import com.github.tnerevival.user.IDFinder;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -116,7 +117,7 @@ public abstract class TNECommand {
     String world = TNELib.instance().defaultWorld;
 
     if(developer()) {
-      if(!((Player)sender).getUniqueId().equals("5bb0dcb3-98ee-47b3-8f66-3eb1cdd1a881")) {
+      if(!IDFinder.getID(sender).toString().equals("5bb0dcb3-98ee-47b3-8f66-3eb1cdd1a881")) {
         sender.sendMessage(ChatColor.RED + "You must be a TNE developer to use this commands.");
         return false;
       }

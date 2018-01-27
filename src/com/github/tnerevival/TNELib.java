@@ -19,9 +19,9 @@ package com.github.tnerevival;
 import com.github.tnerevival.commands.CommandManager;
 import com.github.tnerevival.commands.TNECommand;
 import com.github.tnerevival.core.SaveManager;
+import com.github.tnerevival.core.UUIDManager;
 import com.github.tnerevival.core.api.TNELibAPI;
 import com.github.tnerevival.core.configurations.ConfigurationManager;
-import com.github.tnerevival.menu.MenuManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -42,7 +42,8 @@ public class TNELib extends JavaPlugin {
 
   protected static TNELib instance;
   protected TNELibAPI api;
-  protected SaveManager saveManager;
+  private SaveManager saveManager;
+  private UUIDManager uuidManager;
 
 
 
@@ -51,7 +52,6 @@ public class TNELib extends JavaPlugin {
 
   private static ConfigurationManager configurations;
   protected CommandManager commandManager;
-  protected MenuManager menuManager;
 
   /*
    * DataProvider settings
@@ -60,9 +60,15 @@ public class TNELib extends JavaPlugin {
   public boolean useUUID = true;
   public String consoleName = "Server Name";
 
+
   public Double currentSaveVersion = 0.0;
   public String defaultWorld = "Default";
-  public static Map<String, UUID> uuidCache = new HashMap<>();
+
+  //UUID Cache variables
+  protected Map<String, UUID> uuidCache = new HashMap<>();
+  public String townPrefix = "town-";
+  public String nationPrefix = "nation-";
+  public String factionPrefix = "faction-";
 
   public void onEnable() {
     instance = this;
@@ -132,10 +138,6 @@ public class TNELib extends JavaPlugin {
     return instance;
   }
 
-  public MenuManager menuManager() {
-    return menuManager;
-  }
-
   public TNELibAPI api() {
     return api;
   }
@@ -148,8 +150,16 @@ public class TNELib extends JavaPlugin {
     return saveManager;
   }
 
-  public Map<String, UUID> getOffline() {
-    return new HashMap<>();
+  public void setSaveManager(SaveManager manager) {
+    this.saveManager = manager;
+  }
+
+  public UUIDManager getUuidManager() {
+    return uuidManager;
+  }
+
+  public void setUuidManager(UUIDManager manager) {
+    this.uuidManager = manager;
   }
 
   public static void debug(String message) {

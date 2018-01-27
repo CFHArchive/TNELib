@@ -1,5 +1,6 @@
 package com.github.tnerevival.core;
 
+import com.github.tnerevival.TNELib;
 import com.github.tnerevival.core.version.ReleaseType;
 
 import java.io.BufferedReader;
@@ -25,7 +26,7 @@ public class UpdateChecker {
         this.build = in.readLine();
         in.close();
     } catch (Exception e) {
-      e.printStackTrace();
+      TNELib.instance().getLogger().info("Unable to contact update server!");
     }
   }
 

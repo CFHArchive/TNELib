@@ -17,6 +17,7 @@
 package com.github.tnerevival.core.collection;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,4 +39,10 @@ public interface MapListener<K, V> {
   Set<K> keySet();
   Set<Map.Entry<K, V>> entrySet();
   void remove(Object key);
+  default Map<K, V> map() {
+    Map<K, V> m = new HashMap<K, V>();
+    entrySet().forEach((entry)->m.put(entry.getKey(), entry.getValue()));
+
+    return m;
+  }
 }

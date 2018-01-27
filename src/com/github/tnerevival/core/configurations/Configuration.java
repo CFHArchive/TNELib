@@ -57,6 +57,7 @@ public abstract class Configuration {
 
   public void setValue(String node, Object value) {
     modified.put(node, value);
+    configurations.put(node, value);
   }
 
 }

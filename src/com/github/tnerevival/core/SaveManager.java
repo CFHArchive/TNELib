@@ -1,10 +1,10 @@
 package com.github.tnerevival.core;
 
 import com.github.tnerevival.TNELib;
-import com.github.tnerevival.core.version.Version;
 
 import java.io.File;
-import java.util.TreeMap;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by creatorfromhell on 8/29/2017.
@@ -12,9 +12,8 @@ import java.util.TreeMap;
  **/
 public class SaveManager {
 
-  protected TreeMap<Double, Version> versions = new TreeMap<>();
+  protected List<Double> versions = new ArrayList<>();
 
-  protected Version versionInstance;
   protected DataManager manager;
   protected Double saveVersion = 0.0;
   protected File file;
@@ -23,17 +22,16 @@ public class SaveManager {
     this.manager = manager;
   }
 
-  public void addVersion(Version version) {
+  public void addVersion(Double version) {
     addVersion(version, false);
   }
 
-  public void addVersion(Version version, boolean current) {
-    if(current) TNELib.instance().currentSaveVersion = version.versionNumber();
-    versions.put(version.versionNumber(), version);
+  public void addVersion(Double version, boolean current) {
+    if(current) TNELib.instance().currentSaveVersion = version;
+    versions.add(version);
   }
 
   public void initialize() {
-    versionInstance = versions.get(TNELib.instance().currentSaveVersion);
     if(manager.getDb().first()) {
       manager.getDb().initialize();
       return;
@@ -44,18 +42,17 @@ public class SaveManager {
   }
 
   public void load() {
-    if(saveVersion < versionInstance.versionNumber() && saveVersion != 0) {
+    if(saveVersion < TNELib.instance().currentSaveVersion && saveVersion != 0) {
       manager.getDb().update(saveVersion);
       TNELib.instance().getLogger().info("Saved data has been updated!");
     }
-    Version loadVersion = (saveVersion != 0.0) ? versions.get(saveVersion) : versionInstance;
-    manager.getDb().load(loadVersion.versionNumber());
+    Double version = (saveVersion != 0.0) ? saveVersion : TNELib.instance().currentSaveVersion;
+    manager.getDb().load(version);
     TNELib.instance().getLogger().info("Finished loading data!");
   }
 
   public void save() {
-    Version loadVersion = (saveVersion != 0.0) ? versions.get(saveVersion) : versionInstance;
-    manager.getDb().save(loadVersion.versionNumber());
+    manager.getDb().save(TNELib.instance().currentSaveVersion);
     TNELib.instance().getLogger().info("Finished saving data!");
   }
 

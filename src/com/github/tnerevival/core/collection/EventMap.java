@@ -19,6 +19,7 @@ package com.github.tnerevival.core.collection;
 import com.github.tnerevival.TNELib;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 
 /**
  * Created by creatorfromhell on 11/2/2016.
@@ -153,6 +154,15 @@ public class EventMap<K, V> extends HashMap<K, V> {
       return listener.keySet();
     }
     return map.keySet();
+  }
+
+  @Override
+  public void forEach(BiConsumer<? super K, ? super V> action) {
+    if(TNELib.instance().getSaveManager().getDataManager().getDb().supportUpdate() && !TNELib.instance().getSaveManager().getDataManager().isCacheData()) {
+      listener.map().forEach(action);
+      return;
+    }
+    map.forEach(action);
   }
 
   @Override

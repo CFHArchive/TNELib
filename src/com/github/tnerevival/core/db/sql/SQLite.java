@@ -15,31 +15,33 @@ import java.sql.SQLException;
  */
 public class SQLite extends SQLDatabase {
 
-  private String file;
-
   public SQLite(DataManager manager) {
     super(manager);
   }
 
   @Override
   public void connect(DataManager manager) {
-    File db = new File(file);
+    File db = new File(manager.getFile());
     if(!db.exists()) {
       try {
         db.createNewFile();
       } catch(IOException e) {
-        System.out.println("Unable to create database file.");
+        e.printStackTrace();
+      }
+    }
+    if(connection != null) {
+      try {
+        connection.close();
+      } catch (SQLException e) {
         e.printStackTrace();
       }
     }
     try {
       Class.forName("org.sqlite.JDBC");
-      connection = DriverManager.getConnection("jdbc:sqlite:" + file);
+      connection = DriverManager.getConnection("jdbc:sqlite:" + manager.getFile());
     } catch (SQLException e) {
-      System.out.println("Unable to connect to SQLite.");
       e.printStackTrace();
     } catch (ClassNotFoundException e) {
-      System.out.println("Unable to find JBDC File.");
       e.printStackTrace();
     }
   }
