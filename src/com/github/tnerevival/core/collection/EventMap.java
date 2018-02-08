@@ -47,7 +47,8 @@ public class EventMap<K, V> extends HashMap<K, V> {
 
   @Override
   public V get(Object key) {
-    if(!TNELib.instance().getSaveManager().getDataManager().getDb().supportUpdate() || TNELib.instance().getSaveManager().getDataManager().isCacheData()) {
+    if(!TNELib.instance().getSaveManager().getDataManager().getDb().supportUpdate()
+        || TNELib.instance().getSaveManager().getDataManager().isCacheData() && map.containsKey(key)) {
       return map.get(key);
     }
 

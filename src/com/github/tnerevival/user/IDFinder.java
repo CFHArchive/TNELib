@@ -131,6 +131,13 @@ public class IDFinder {
       return id;
     }
 
+    if(identifier.contains("towny-war-chest")) {
+      TNELib.debug("Towny War Chest");
+      UUID id = ecoID(identifier);
+      checkSpecial(id);
+      return id;
+    }
+
     if(identifier.contains(TNELib.instance().townPrefix)) {
       TNELib.debug("Towny Town");
       UUID id = ecoID(identifier);
