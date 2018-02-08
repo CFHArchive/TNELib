@@ -47,16 +47,18 @@ public class EventMap<K, V> extends HashMap<K, V> {
 
   @Override
   public V get(Object key) {
-    if(!TNELib.instance().getSaveManager().getDataManager().getDb().supportUpdate()
-        || TNELib.instance().getSaveManager().getDataManager().isCacheData() && map.containsKey(key)) {
-      return map.get(key);
-    }
-
     if(TNELib.instance().getSaveManager().getDataManager().getDb().supportUpdate()) {
       if(!TNELib.instance().getSaveManager().getDataManager().isCacheData() || !map.containsKey(key)) {
+        System.out.println("Returning get from database");
         return listener.get(key);
       }
     }
+    if(!TNELib.instance().getSaveManager().getDataManager().getDb().supportUpdate()
+        || TNELib.instance().getSaveManager().getDataManager().isCacheData()) {
+      System.out.println("Returning get from cache");
+      return map.get(key);
+    }
+    System.out.println("Defaulting on get from database");
     return map.get(key);
   }
 
@@ -99,7 +101,7 @@ public class EventMap<K, V> extends HashMap<K, V> {
       removed = map.remove(key);
     }
 
-    if(TNELib.instance().getSaveManager().getDataManager().getDb().supportUpdate() && !TNELib.instance().getSaveManager().getDataManager().isCacheData() || database) {
+    if(TNELib.instance().getSaveManager().getDataManager().getDb().supportUpdate() && !TNELib.instance().getSaveManager().getDataManager().isCacheData() && database || database) {
       listener.remove(key);
     }
     return removed;

@@ -4,9 +4,7 @@ import com.github.tnerevival.core.DataManager;
 import com.github.tnerevival.core.db.sql.SQLResult;
 
 import java.sql.*;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public abstract class SQLDatabase implements DatabaseConnector {
 
@@ -108,13 +106,10 @@ public abstract class SQLDatabase implements DatabaseConnector {
   public void close(DataManager manager) {
     if(connected(manager)) {
       try {
-        Iterator<Map.Entry<Integer, SQLResult>> it = results.entrySet().iterator();
-        while(it.hasNext()) {
-          Map.Entry<Integer, SQLResult> next = it.next();
-
-          next.getValue().close();
-          it.remove();
+        for(SQLResult result : results.values()) {
+          result.close();
         }
+        results.clear();
         connection.close();
         connection = null;
       } catch (SQLException e) {

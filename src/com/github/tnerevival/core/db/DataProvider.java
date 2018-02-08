@@ -23,5 +23,6 @@ public abstract class DataProvider {
   public abstract void update(Double version);
   public abstract void save(Double version);
   public abstract void load(Double version);
+  public abstract void delete(Double version);
   public abstract DatabaseConnector connector();
 }
