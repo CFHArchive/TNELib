@@ -9,37 +9,32 @@ import java.util.*;
 public abstract class SQLDatabase implements DatabaseConnector {
 
   private TreeMap<Integer, SQLResult> results = new TreeMap<>();
-  protected TreeMap<Integer, Connection> connections = new TreeMap<>();
+  protected Connection connection;
   protected DataManager manager;
 
   public SQLDatabase(DataManager manager) {
     this.manager = manager;
   }
 
-  public abstract Connection connect(int id, DataManager manager);
+  public abstract void connect(DataManager manager);
 
-  @Override
-  public Boolean connected(int id, DataManager manager) {
-    return connections.get(id) != null;
+  public Boolean connected(DataManager manager) {
+    return connection != null;
   }
 
-  public Connection connection(int id, DataManager manager) {
-    if(!connected(id, manager)) {
-      connections.put(id, connect(id, manager));
+  public Connection connection(DataManager manager) {
+    if(!connected(manager)) {
+      connect(manager);
     }
-    return connections.get(id);
+    return connection;
   }
 
-  public java.sql.Connection sqlConnection(int id, DataManager manager) {
-    return ((java.sql.Connection)connection(id, manager));
-  }
-
-  public int executeQuery(int connection, String query) {
-    if(!connected(connection, manager)) {
-      connections.put(connection, connect(connection, manager));
+  public int executeQuery(String query) {
+    if(!connected(manager)) {
+      connect(manager);
     }
     try {
-      Statement statement = sqlConnection(connection, manager).createStatement();
+      Statement statement = connection(manager).createStatement();
       return addResult(statement, statement.executeQuery(query));
     } catch (SQLException e) {
       e.printStackTrace();
@@ -47,12 +42,12 @@ public abstract class SQLDatabase implements DatabaseConnector {
     return -1;
   }
 
-  public int executePreparedQuery(int connection, String query, Object[] variables) {
-    if(!connected(connection, manager)) {
-      connections.put(connection, connect(connection, manager));
+  public int executePreparedQuery(String query, Object[] variables) {
+    if(!connected(manager)) {
+      connect(manager);
     }
     try {
-      PreparedStatement statement = sqlConnection(connection, manager).prepareStatement(query);
+      PreparedStatement statement = connection(manager).prepareStatement(query);
       for(int i = 0; i < variables.length; i++) {
         statement.setObject((i + 1), variables[i]);
       }
@@ -63,25 +58,27 @@ public abstract class SQLDatabase implements DatabaseConnector {
     return -1;
   }
 
-  public void executeUpdate(int connection, String query) {
-    if(!connected(connection, manager)) {
-      connections.put(connection, connect(connection, manager));
+  public void executeUpdate(String query) {
+    if(!connected(manager)) {
+      connect(manager);
     }
     try {
-      Statement statement = sqlConnection(connection, manager).createStatement();
+      Statement statement = connection(manager).createStatement();
       statement.executeUpdate(query);
       statement.close();
     } catch (SQLException e) {
       e.printStackTrace();
+    } finally {
+      close(manager);
     }
   }
 
-  public void executePreparedUpdate(int connection, String query, Object[] variables) {
-    if(!connected(connection, manager)) {
-      connections.put(connection, connect(connection, manager));
+  public void executePreparedUpdate(String query, Object[] variables) {
+    if(!connected(manager)) {
+      connect(manager);
     }
     try {
-      PreparedStatement prepared = sqlConnection(connection, manager).prepareStatement(query);
+      PreparedStatement prepared = connection(manager).prepareStatement(query);
 
       for(int i = 0; i < variables.length; i++) {
         prepared.setObject((i + 1), variables[i]);
@@ -90,6 +87,8 @@ public abstract class SQLDatabase implements DatabaseConnector {
       prepared.close();
     } catch (SQLException e) {
       e.printStackTrace();
+    } finally {
+      close(manager);
     }
   }
 
@@ -106,19 +105,35 @@ public abstract class SQLDatabase implements DatabaseConnector {
 
   public void closeResult(int id) {
     results.get(id).close();
+    results.remove(id);
+    if(results.size() <= 0) close(manager);
   }
 
-  public void close(int connection, DataManager manager) {
-    if(connected(connection, manager)) {
-      try {
-        for(SQLResult result : results.values()) {
-          result.close();
-        }
+  public void close(DataManager manager) {
+    close(manager, false);
+  }
+
+  public void close(DataManager manager, boolean force) {
+    if(connected(manager)) {
+      if(!force && results.size() <= 0) {
         results.clear();
-        sqlConnection(connection, manager).close();
-        connections.remove(connection);
-      } catch (SQLException e) {
-        e.printStackTrace();
+        try {
+          connection.close();
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
+        connection = null;
+      } else if(force) {
+        try {
+          for (SQLResult result : results.values()) {
+            result.close();
+          }
+          results.clear();
+          connection.close();
+          connection = null;
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
       }
     }
   }
