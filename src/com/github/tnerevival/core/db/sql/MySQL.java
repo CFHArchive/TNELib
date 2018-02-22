@@ -1,6 +1,7 @@
 package com.github.tnerevival.core.db.sql;
 
 import com.github.tnerevival.core.DataManager;
+import com.github.tnerevival.core.db.Connection;
 import com.github.tnerevival.core.db.SQLDatabase;
 
 import java.sql.DriverManager;
@@ -18,21 +19,23 @@ public class MySQL extends SQLDatabase {
   }
 
   @Override
-  public void connect(DataManager manager) {
-    if(connection != null) {
-      try {
-        connection.close();
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
+  public Connection connect(int id, DataManager manager) {
+    Connection connection;
+    java.sql.Connection sqlConnection = null;
+    if(connection(id, manager) != null) {
+      close(id, manager);
     }
     try {
       Class.forName("com.mysql.jdbc.Driver");
-      connection = DriverManager.getConnection("jdbc:mysql://" + manager.getHost() + ":" + manager.getPort() + "/"  + manager.getDatabase() + "?useSSL=false", manager.getUser(), manager.getPassword());
+      sqlConnection = DriverManager.getConnection("jdbc:mysql://" + manager.getHost() + ":" + manager.getPort() + "/"  + manager.getDatabase() + "?useSSL=false", manager.getUser(), manager.getPassword());
     } catch (SQLException e) {
       e.printStackTrace();
     } catch (ClassNotFoundException e) {
       e.printStackTrace();
     }
+    int key = connections.lastKey();
+    connection = new Connection(key, sqlConnection);
+    connections.put(key, connection);
+    return connection;
   }
 }

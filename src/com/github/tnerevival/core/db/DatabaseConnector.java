@@ -7,8 +7,8 @@ import com.github.tnerevival.core.DataManager;
  * All rights reserved.
  **/
 public interface DatabaseConnector {
-  Boolean connected(DataManager manager);
-  void connect(DataManager manager);
-  Object connection(DataManager manager);
-  void close(DataManager manager);
+  Boolean connected(int id, DataManager manager);
+  Connection connect(int id, DataManager manager);
+  Object connection(int id, DataManager manager);
+  void close(int id, DataManager manager);
 }

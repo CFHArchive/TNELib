@@ -1,6 +1,7 @@
 package com.github.tnerevival.core.db.sql;
 
 import com.github.tnerevival.core.DataManager;
+import com.github.tnerevival.core.db.Connection;
 import com.github.tnerevival.core.db.SQLDatabase;
 
 import java.io.File;
@@ -20,7 +21,7 @@ public class SQLite extends SQLDatabase {
   }
 
   @Override
-  public void connect(DataManager manager) {
+  public Connection connect(int id, DataManager manager) {
     File db = new File(manager.getFile());
     if(!db.exists()) {
       try {
@@ -29,20 +30,22 @@ public class SQLite extends SQLDatabase {
         e.printStackTrace();
       }
     }
-    if(connection != null) {
-      try {
-        connection.close();
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
+    Connection connection;
+    java.sql.Connection sqlConnection = null;
+    if(connection(id, manager) != null) {
+      close(id, manager);
     }
     try {
       Class.forName("org.sqlite.JDBC");
-      connection = DriverManager.getConnection("jdbc:sqlite:" + manager.getFile());
+      sqlConnection = DriverManager.getConnection("jdbc:sqlite:" + manager.getFile());
     } catch (SQLException e) {
       e.printStackTrace();
     } catch (ClassNotFoundException e) {
       e.printStackTrace();
     }
+    int key = connections.lastKey();
+    connection = new Connection(key, sqlConnection);
+    connections.put(key, connection);
+    return connection;
   }
 }

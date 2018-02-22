@@ -12,24 +12,25 @@ public class FlatFile implements DatabaseConnector {
 
   private FlatFileConnection connection;
 
-  public Boolean connected(DataManager manager) {
+  public Boolean connected(int id, DataManager manager) {
     return true;
   }
 
-  public void connect(DataManager manager) {
+  public Connection connect(int id, DataManager manager) {
     if(connection == null) {
       connection = new FlatFileConnection(manager.getFile(), manager.isCompress());
     }
+    return new Connection(0, connection);
   }
 
-  public FlatFileConnection connection(DataManager manager) {
-    if(connection == null || !connected(manager)) {
-      connect(manager);
+  public FlatFileConnection connection(int id, DataManager manager) {
+    if(connection == null || !connected(id, manager)) {
+      connect(id, manager);
     }
     return connection;
   }
 
-  public void close(DataManager manager) {
+  public void close(int id, DataManager manager) {
     connection.close();
   }
 }
