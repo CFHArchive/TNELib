@@ -24,7 +24,7 @@ public class MySQL extends SQLDatabase {
     }
     try {
       Class.forName("com.mysql.jdbc.Driver");
-      connection = DriverManager.getConnection("jdbc:mysql://" + manager.getHost() + ":" + manager.getPort() + "/"  + manager.getDatabase() + "?useSSL=false", manager.getUser(), manager.getPassword());
+      connection = DriverManager.getConnection("jdbc:mysql://" + manager.getHost() + ":" + manager.getPort() + "/"  + manager.getDatabase() + "?useSSL=false&rewriteBatchedStatements=true&useServerPrepStmts=true", manager.getUser(), manager.getPassword());
     } catch (SQLException e) {
       e.printStackTrace();
     } catch (ClassNotFoundException e) {

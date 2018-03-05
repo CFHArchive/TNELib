@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github</groupId>
     <artifactId>TNELib</artifactId>
-    <version>0.0.1.0-SNAPSHOT</version>
+    <version>0.1.0.0</version>
     <name>TNELib</name>
     <build>
         <directory>target</directory>
@@ -48,4 +48,11 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+    <distributionManagement>
+        <repository>
+            <id>bintray-theneweconomy-java</id>
+            <name>theneweconomy-java</name>
+            <url>https://api.bintray.com/maven/theneweconomy/java/TNELib/;publish=1</url>
+        </repository>
+    </distributionManagement>
 </project>
