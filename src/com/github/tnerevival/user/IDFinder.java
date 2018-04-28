@@ -61,6 +61,9 @@ public class IDFinder {
     UUID id = Bukkit.getOfflinePlayer(name).getUniqueId();
     if(id != null) return id;
 
+    id = MojangAPI.getPlayerUUID(name);
+    if(id != null) return id;
+
     return genUUID();
   }
 
