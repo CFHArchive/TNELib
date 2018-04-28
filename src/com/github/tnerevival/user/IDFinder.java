@@ -58,7 +58,7 @@ public class IDFinder {
   }
 
   public static UUID genUUID(String name) {
-    UUID id = MojangAPI.getPlayerUUID(name);
+    UUID id = Bukkit.getOfflinePlayer(name).getUniqueId();
     if(id != null) return id;
 
     return genUUID();
@@ -157,7 +157,7 @@ public class IDFinder {
       return ecoID(identifier);
     }
 
-    UUID mojangID = (identifier.equalsIgnoreCase(TNELib.instance().consoleName))? null : MojangAPI.getPlayerUUID(identifier);
+    UUID mojangID = (identifier.equalsIgnoreCase(TNELib.instance().consoleName))? null : Bukkit.getOfflinePlayer(identifier).getUniqueId();
     if(mojangID == null) {
       TNELib.debug("MOJANG API RETURNED NULL VALUE");
       return ecoID(identifier);
