@@ -16,15 +16,9 @@
  */
 package com.github.tnerevival;
 
-import com.github.tnerevival.commands.CommandManager;
-import com.github.tnerevival.commands.TNECommand;
 import com.github.tnerevival.core.SaveManager;
 import com.github.tnerevival.core.UUIDManager;
-import com.github.tnerevival.core.api.TNELibAPI;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.text.SimpleDateFormat;
@@ -43,7 +37,6 @@ public class TNELib extends JavaPlugin {
   public List<UUID> special = new ArrayList<>();
 
   protected static TNELib instance;
-  protected TNELibAPI api;
   private SaveManager saveManager;
   private UUIDManager uuidManager;
 
@@ -51,7 +44,6 @@ public class TNELib extends JavaPlugin {
 
   public SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss.S");
   public static final Pattern uuidCreator = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
-  protected CommandManager commandManager;
 
   /*
    * DataProvider settings
@@ -73,9 +65,6 @@ public class TNELib extends JavaPlugin {
   public void onEnable() {
     instance = this;
 
-    api = new TNELibAPI(this);
-    commandManager = new CommandManager();
-
     if(Bukkit.getWorlds().size() >= 1) {
       defaultWorld = Bukkit.getServer().getWorlds().get(0).getName();
     } else {
@@ -83,47 +72,8 @@ public class TNELib extends JavaPlugin {
     }
   }
 
-  public CommandManager getCommandManager() {
-    return commandManager;
-  }
-
-  public void registerCommand(String[] accessors, TNECommand command) {
-    commandManager.commands.put(accessors, command);
-    commandManager.registerCommands();
-  }
-
-  public void registerCommands(Map<String[], TNECommand> commands) {
-    commandManager.commands = commands;
-    commandManager.registerCommands();
-  }
-
-  public void unregisterCommand(String[] accessors) {
-    commandManager.unregister(accessors);
-  }
-
-  @Override
-  public boolean onCommand(CommandSender sender, Command command, String label, String[] arguments) {
-    return customCommand(sender, label, arguments);
-  }
-
-  public boolean customCommand(CommandSender sender, String label, String[] arguments) {
-    TNECommand ecoCommand = commandManager.Find(label);
-    if(ecoCommand != null) {
-      if(!ecoCommand.canExecute(sender)) {
-        sender.sendMessage(ChatColor.RED + "I'm sorry, but you're not allowed to use that command.");
-        return false;
-      }
-      return ecoCommand.execute(sender, label, arguments);
-    }
-    return false;
-  }
-
   public static TNELib instance() {
     return instance;
-  }
-
-  public TNELibAPI api() {
-    return api;
   }
 
   public SaveManager getSaveManager() {
