@@ -21,16 +21,18 @@ import com.github.tnerevival.commands.TNECommand;
 import com.github.tnerevival.core.SaveManager;
 import com.github.tnerevival.core.UUIDManager;
 import com.github.tnerevival.core.api.TNELibAPI;
-import com.github.tnerevival.core.configurations.ConfigurationManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 /**
@@ -49,8 +51,6 @@ public class TNELib extends JavaPlugin {
 
   public SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss.S");
   public static final Pattern uuidCreator = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
-
-  private static ConfigurationManager configurations;
   protected CommandManager commandManager;
 
   /*
@@ -74,8 +74,6 @@ public class TNELib extends JavaPlugin {
     instance = this;
 
     api = new TNELibAPI(this);
-
-    configurations = new ConfigurationManager();
     commandManager = new CommandManager();
 
     if(Bukkit.getWorlds().size() >= 1) {
@@ -120,34 +118,12 @@ public class TNELib extends JavaPlugin {
     return false;
   }
 
-  private void initializeConfigurations() {
-    try {
-      setConfigurationDefaults();
-    } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
-    }
-  }
-
-  public void loadConfigurations() {
-    saveConfigurations(false);
-  }
-
-  private void saveConfigurations(boolean check) {
-  }
-
-  private void setConfigurationDefaults() throws UnsupportedEncodingException {
-  }
-
   public static TNELib instance() {
     return instance;
   }
 
   public TNELibAPI api() {
     return api;
-  }
-
-  public static ConfigurationManager configurations() {
-    return configurations;
   }
 
   public SaveManager getSaveManager() {
