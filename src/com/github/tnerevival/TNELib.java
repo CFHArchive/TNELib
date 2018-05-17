@@ -105,10 +105,14 @@ public class TNELib extends JavaPlugin {
 
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] arguments) {
+    return customCommand(sender, label, arguments);
+  }
+
+  public boolean customCommand(CommandSender sender, String label, String[] arguments) {
     TNECommand ecoCommand = commandManager.Find(label);
     if(ecoCommand != null) {
       if(!ecoCommand.canExecute(sender)) {
-        sender.sendMessage(ChatColor.RED + "I'm sorry, but you're not allowed to use that commands.");
+        sender.sendMessage(ChatColor.RED + "I'm sorry, but you're not allowed to use that command.");
         return false;
       }
       return ecoCommand.execute(sender, label, arguments);

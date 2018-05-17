@@ -40,19 +40,18 @@ public class IDFinder {
       return TNELib.instance().getUuidManager().getID(username);
     }
     UUID eco = (skip)? genUUID() : genUUID(username);
-    TNELib.instance().getUuidManager().addUUID(username, eco);
+    //TNELib.instance().getUuidManager().addUUID(username, eco);
     return eco;
   }
 
   public static String getUsername(String identifier) {
     if(isUUID(identifier)) {
-      if(getPlayer(identifier) == null) {
-        if(getOffline(identifier, false) != null) {
-          return getOffline(identifier, false).getName();
-        }
-        return MojangAPI.getPlayerUsername(getID(identifier));
+      UUID id = UUID.fromString(identifier);
+      OfflinePlayer player = Bukkit.getOfflinePlayer(id);
+      if(player == null) {
+        return MojangAPI.getPlayerUsername(id);
       }
-      return getPlayer(identifier).getName();
+      return player.getName();
     }
     return identifier;
   }
@@ -165,7 +164,7 @@ public class IDFinder {
       TNELib.debug("MOJANG API RETURNED NULL VALUE");
       return ecoID(identifier);
     }
-    TNELib.instance().getUuidManager().addUUID(identifier, mojangID);
+    //TNELib.instance().getUuidManager().addUUID(identifier, mojangID);
     return mojangID;
   }
 
