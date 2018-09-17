@@ -8,7 +8,7 @@ import com.github.tnerevival.core.DataManager;
  **/
 public interface DatabaseConnector {
   Boolean connected(DataManager manager);
-  void connect(DataManager manager);
+  void connect(DataManager manager) throws Exception;
   Object connection(DataManager manager);
   void close(DataManager manager);
 }

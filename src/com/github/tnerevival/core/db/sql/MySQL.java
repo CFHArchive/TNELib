@@ -18,9 +18,9 @@ public class MySQL extends SQLDatabase {
   }
 
   @Override
-  public void connect(DataManager manager) {
+  public void connect(DataManager manager) throws SQLException {
     if(connection != null) {
-      return;
+      connection.close();
     }
     try {
       Class.forName("com.mysql.jdbc.Driver");

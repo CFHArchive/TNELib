@@ -3,6 +3,7 @@ package com.github.tnerevival.core;
 import com.github.tnerevival.TNELib;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class SaveManager {
     versions.add(version);
   }
 
-  public void initialize() {
+  public void initialize() throws SQLException {
     if(manager.getDb().first()) {
       manager.getDb().initialize();
       return;
@@ -41,7 +42,7 @@ public class SaveManager {
     load();
   }
 
-  public void load() {
+  public void load() throws SQLException {
     if(saveVersion < TNELib.instance().currentSaveVersion && saveVersion != 0) {
       manager.getDb().update(saveVersion);
       TNELib.instance().getLogger().info("Saved data has been updated!");
@@ -51,7 +52,7 @@ public class SaveManager {
     TNELib.instance().getLogger().info("Finished loading data!");
   }
 
-  public void save() {
+  public void save() throws SQLException {
     manager.getDb().save(TNELib.instance().currentSaveVersion);
     TNELib.instance().getLogger().info("Finished saving data!");
   }

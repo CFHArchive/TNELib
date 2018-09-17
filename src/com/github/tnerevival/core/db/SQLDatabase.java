@@ -16,22 +16,30 @@ public abstract class SQLDatabase implements DatabaseConnector {
     this.manager = manager;
   }
 
-  public abstract void connect(DataManager manager);
+  public abstract void connect(DataManager manager) throws SQLException;
 
   public Boolean connected(DataManager manager) {
     return connection != null;
   }
 
-  public Connection connection(DataManager manager) {
+  public Connection connection(DataManager manager)  {
     if(!connected(manager)) {
-      connect(manager);
+      try {
+        connect(manager);
+      } catch(SQLException e) {
+        e.printStackTrace();
+      }
     }
     return connection;
   }
 
   public int executeQuery(String query) {
     if(!connected(manager)) {
-      connect(manager);
+      try {
+        connect(manager);
+      } catch(SQLException e) {
+        e.printStackTrace();
+      }
     }
     try {
       Statement statement = connection(manager).createStatement();
@@ -44,7 +52,11 @@ public abstract class SQLDatabase implements DatabaseConnector {
 
   public int executePreparedQuery(String query, Object[] variables) {
     if(!connected(manager)) {
-      connect(manager);
+      try {
+        connect(manager);
+      } catch(SQLException e) {
+        e.printStackTrace();
+      }
     }
     try {
       PreparedStatement statement = connection(manager).prepareStatement(query);
@@ -60,7 +72,11 @@ public abstract class SQLDatabase implements DatabaseConnector {
 
   public void executeUpdate(String query) {
     if(!connected(manager)) {
-      connect(manager);
+      try {
+        connect(manager);
+      } catch(SQLException e) {
+        e.printStackTrace();
+      }
     }
     try {
       Statement statement = connection(manager).createStatement();
@@ -75,7 +91,11 @@ public abstract class SQLDatabase implements DatabaseConnector {
 
   public void executePreparedUpdate(String query, Object[] variables) {
     if(!connected(manager)) {
-      connect(manager);
+      try {
+        connect(manager);
+      } catch(SQLException e) {
+        e.printStackTrace();
+      }
     }
     try {
       PreparedStatement prepared = connection(manager).prepareStatement(query);

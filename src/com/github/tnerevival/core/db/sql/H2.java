@@ -15,7 +15,7 @@ public class H2 extends SQLDatabase {
   }
 
   @Override
-  public void connect(DataManager manager) {
+  public void connect(DataManager manager) throws SQLException {
     File db = new File(manager.getFile());
     if(!db.exists()) {
       try {
@@ -25,7 +25,7 @@ public class H2 extends SQLDatabase {
       }
     }
     if(connection != null) {
-      return;
+      connection.close();
     }
     try {
       Class.forName("org.h2.Driver");
