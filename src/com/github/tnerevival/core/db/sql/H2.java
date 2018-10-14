@@ -15,25 +15,22 @@ public class H2 extends SQLDatabase {
   }
 
   @Override
-  public void connect(DataManager manager) throws SQLException {
-    File db = new File(manager.getFile());
-    if(!db.exists()) {
-      try {
-        db.createNewFile();
-      } catch(IOException e) {
-        e.printStackTrace();
-      }
-    }
-    if(connection != null) {
-      connection.close();
-    }
-    try {
-      Class.forName("org.h2.Driver");
-      connection = DriverManager.getConnection("jdbc:h2:" + manager.getFile() + ";mode=MySQL", manager.getUser(), manager.getPassword());
-    } catch (SQLException e) {
-      e.printStackTrace();
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-    }
+  public String getDriver() {
+    return "org.h2.Driver";
+  }
+
+  @Override
+  public Boolean dataSource() {
+    return true;
+  }
+
+  @Override
+  public String dataSourceURL() {
+    return "org.h2.jdbcx.JdbcDataSource";
+  }
+
+  @Override
+  public String getURL(String file, String host, int port, String database) {
+    return "jdbc:h2:" + file + ";mode=MySQL&DB_CLOSE_DELAY=-1";
   }
 }

@@ -20,25 +20,22 @@ public class SQLite extends SQLDatabase {
   }
 
   @Override
-  public void connect(DataManager manager) {
-    File db = new File(manager.getFile());
-    if(!db.exists()) {
-      try {
-        db.createNewFile();
-      } catch(IOException e) {
-        e.printStackTrace();
-      }
-    }
-    if(connection != null) {
-      return;
-    }
-    try {
-      Class.forName("org.sqlite.JDBC");
-      connection = DriverManager.getConnection("jdbc:sqlite:" + manager.getFile());
-    } catch (SQLException e) {
-      e.printStackTrace();
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-    }
+  public String getDriver() {
+    return null;
+  }
+
+  @Override
+  public Boolean dataSource() {
+    return null;
+  }
+
+  @Override
+  public String dataSourceURL() {
+    return null;
+  }
+
+  @Override
+  public String getURL(String file, String host, int port, String database) {
+    return null;
   }
 }

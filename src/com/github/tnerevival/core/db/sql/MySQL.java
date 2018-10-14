@@ -18,17 +18,23 @@ public class MySQL extends SQLDatabase {
   }
 
   @Override
-  public void connect(DataManager manager) throws SQLException {
-    if(connection != null) {
-      connection.close();
-    }
-    try {
-      Class.forName("com.mysql.jdbc.Driver");
-      connection = DriverManager.getConnection("jdbc:mysql://" + manager.getHost() + ":" + manager.getPort() + "/"  + manager.getDatabase() + "?useSSL=false&rewriteBatchedStatements=true&useServerPrepStmts=true", manager.getUser(), manager.getPassword());
-    } catch (SQLException e) {
-      e.printStackTrace();
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-    }
+  public String getDriver() {
+    return "com.mysql.jdbc.Driver";
+  }
+
+  @Override
+  public Boolean dataSource() {
+    return false;
+  }
+
+  @Override
+  public String dataSourceURL() {
+    return "com.mysql.jdbc.jdbc2.optional.MysqlDataSource";
+  }
+
+  @Override
+  public String getURL(String file, String host, int port, String database) {
+    return "jdbc:mysql://" + host + ":" + port + "/" +
+        database + "?useSSL=false&rewriteBatchedStatements=true&useServerPrepStmts=true";
   }
 }
