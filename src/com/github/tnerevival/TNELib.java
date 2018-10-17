@@ -21,6 +21,7 @@ import com.github.tnerevival.core.UUIDManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,7 +54,7 @@ public class TNELib extends JavaPlugin {
   public String consoleName = "Server Name";
 
 
-  public Double currentSaveVersion = 0.0;
+  public BigDecimal currentSaveVersion = BigDecimal.ZERO;
   public String defaultWorld = "Default";
 
   //UUID Cache variables

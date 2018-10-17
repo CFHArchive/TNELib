@@ -10,7 +10,7 @@ public class Utilities {
   @SuppressWarnings("rawtypes")
   public static Object getKey(Map m, Object value) {
     for(Object obj : m.keySet()) {
-      if(m.get(obj).equals(value)) {
+      if(m != null && m.get(obj) != null && m.get(obj).equals(value)) {
         return obj;
       }
     }
