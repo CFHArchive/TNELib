@@ -3,7 +3,6 @@ package com.github.tnerevival.core;
 import com.github.tnerevival.TNELib;
 
 import java.io.File;
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.LinkedList;
 
@@ -13,21 +12,21 @@ import java.util.LinkedList;
  **/
 public class SaveManager {
 
-  protected LinkedList<BigDecimal> versions = new LinkedList<>();
+  protected LinkedList<Double> versions = new LinkedList<>();
 
   protected DataManager manager;
-  protected BigDecimal saveVersion = BigDecimal.ZERO;
+  protected Double saveVersion = 0.0;
   protected File file;
 
   public SaveManager(DataManager manager) {
     this.manager = manager;
   }
 
-  public void addVersion(BigDecimal version) {
+  public void addVersion(Double version) {
     addVersion(version, false);
   }
 
-  public void addVersion(BigDecimal version, boolean current) {
+  public void addVersion(Double version, boolean current) {
     if(current) TNELib.instance().currentSaveVersion = version;
     versions.add(version);
   }
@@ -43,11 +42,11 @@ public class SaveManager {
   }
 
   public void load() throws SQLException {
-    if(saveVersion.compareTo(BigDecimal.ZERO) > 0 && saveVersion.compareTo(TNELib.instance().currentSaveVersion) < 0) {
+    if(saveVersion < TNELib.instance().currentSaveVersion && saveVersion != 0) {
       manager.getDb().update(saveVersion);
       TNELib.instance().getLogger().info("Saved data has been updated!");
     }
-    BigDecimal version = (saveVersion.compareTo(BigDecimal.ZERO) > 0) ? saveVersion : TNELib.instance().currentSaveVersion;
+    Double version = (saveVersion != 0.0) ? saveVersion : TNELib.instance().currentSaveVersion;
     manager.getDb().load(version);
     TNELib.instance().getLogger().info("Finished loading data!");
   }

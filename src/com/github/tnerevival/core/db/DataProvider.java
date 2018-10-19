@@ -2,7 +2,6 @@ package com.github.tnerevival.core.db;
 
 import com.github.tnerevival.core.DataManager;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
 
 /**
@@ -21,11 +20,11 @@ public abstract class DataProvider {
   public abstract String identifier();
   public abstract boolean supportUpdate();
   public abstract Boolean first() throws SQLException;
-  public abstract BigDecimal version() throws SQLException;
+  public abstract Double version() throws SQLException;
   public abstract void initialize() throws SQLException;
-  public abstract void update(BigDecimal version) throws SQLException;
-  public abstract void save(BigDecimal version) throws SQLException;
-  public abstract void load(BigDecimal version) throws SQLException;
-  public abstract void delete(BigDecimal version) throws SQLException;
+  public abstract void update(Double version) throws SQLException;
+  public abstract void save(Double version) throws SQLException;
+  public abstract void load(Double version) throws SQLException;
+  public abstract void delete(Double version) throws SQLException;
   public abstract DatabaseConnector connector() throws SQLException;
 }
