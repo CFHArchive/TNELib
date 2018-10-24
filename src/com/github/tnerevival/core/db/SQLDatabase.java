@@ -18,6 +18,10 @@ public abstract class SQLDatabase implements DatabaseConnector {
 
   public SQLDatabase(DataManager manager) {
     this.manager = manager;
+  }
+
+  @Override
+  public void initialize(DataManager manager) {
 
     config = new HikariConfig();
 

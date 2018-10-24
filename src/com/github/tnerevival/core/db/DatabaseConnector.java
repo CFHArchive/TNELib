@@ -11,6 +11,7 @@ public interface DatabaseConnector {
   Boolean dataSource();
   String dataSourceURL();
   String getURL(String file, String host, int port, String database);
+  void initialize(DataManager manager);
   Boolean connected(DataManager manager);
   void connect(DataManager manager) throws Exception;
   Object connection(DataManager manager);
