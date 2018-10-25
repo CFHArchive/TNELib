@@ -2,24 +2,19 @@ package com.github.tnerevival.core.db;
 
 import com.github.tnerevival.TNELib;
 import com.github.tnerevival.core.DataManager;
-import com.github.tnerevival.core.db.sql.SQLResult;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.javalite.activejdbc.DB;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.TreeMap;
+import java.sql.Statement;
 
 public abstract class SQLDatabase implements DatabaseConnector {
-
-  private TreeMap<Integer, SQLResult> results = new TreeMap<>();
-  protected Connection connection;
   protected DataManager manager;
   private HikariConfig config;
   private HikariDataSource dataSource;
-
-  private DB db;
 
   public SQLDatabase(DataManager manager) {
     this.manager = manager;
@@ -27,8 +22,6 @@ public abstract class SQLDatabase implements DatabaseConnector {
 
   @Override
   public void initialize(DataManager manager) {
-
-    db = new DB(TNELib.getDBName());
 
     config = new HikariConfig();
 
@@ -61,17 +54,108 @@ public abstract class SQLDatabase implements DatabaseConnector {
     dataSource = new HikariDataSource(config);
   }
 
-  @Override
-  public void open() {
+  public Boolean connected(DataManager manager) {
+    return true;
+  }
+
+  public Connection connection(DataManager manager) throws SQLException {
+    return dataSource.getConnection();
+  }
+
+  public ResultSet executeQuery(Statement statement, String query) {
+    ResultSet results = null;
     try {
-      db.open(dataSource);
-    } catch(Exception e) {
-      //TODO: Nothing really
+      results = statement.executeQuery(query);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return results;
+  }
+
+  public ResultSet executePreparedQuery(PreparedStatement statement, Object[] variables) {
+    try {
+      for(int i = 0; i < variables.length; i++) {
+        statement.setObject((i + 1), variables[i]);
+      }
+      return statement.executeQuery();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public void executeUpdate(String query) {
+    Connection con = null;
+    Statement statement = null;
+    try {
+      con = dataSource.getConnection();
+      statement = con.createStatement();
+      statement.executeUpdate(query);
+      statement.close();
+      con.close();
+    } catch (SQLException e) {
+      TNELib.debug(e);
+    } finally {
+      try {
+        if(statement != null) statement.close();
+        if(con != null) con.close();
+      } catch(SQLException e) {
+        e.printStackTrace();
+      }
     }
   }
-  @Override
-  public void close() {
-    db.close();
+
+  public void executePreparedUpdate(String query, Object[] variables) {
+    Connection con = null;
+    PreparedStatement statement = null;
+    try {
+      con = dataSource.getConnection();
+      statement =  con.prepareStatement(query);
+
+      for(int i = 0; i < variables.length; i++) {
+        statement.setObject((i + 1), variables[i]);
+      }
+      statement.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        if(statement != null) statement.close();
+        if(con != null) con.close();
+      } catch(SQLException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  public void close(Connection connection, Statement statement, ResultSet results) {
+    if(results != null) {
+      try {
+        results.close();
+      } catch(SQLException e) {
+        e.printStackTrace();
+      }
+    }
+
+    if(statement != null) {
+      try {
+        statement.close();
+      } catch(SQLException e) {
+        e.printStackTrace();
+      }
+    }
+
+    if(connection != null) {
+      try {
+        connection.close();
+      } catch(SQLException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  public HikariDataSource getDataSource() {
+    return dataSource;
   }
 
   public static Integer boolToDB(boolean value) {
