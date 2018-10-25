@@ -32,6 +32,6 @@ public class MySQL extends SQLDatabase {
   @Override
   public String getURL(String file, String host, int port, String database) {
     return "jdbc:mysql://" + host + ":" + port + "/" +
-        database + "?autoreconnect=true&useSSL=false&rewriteBatchedStatements=true&useServerPrepStmts=true";
+        database;
   }
 }

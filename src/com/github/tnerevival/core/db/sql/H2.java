@@ -16,7 +16,7 @@ public class H2 extends SQLDatabase {
 
   @Override
   public Boolean dataSource() {
-    return false;
+    return true;
   }
 
   @Override

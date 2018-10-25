@@ -48,6 +48,7 @@ public class TNELib extends JavaPlugin {
   /*
    * DataProvider settings
    */
+  protected String dbName = "TNELib";
   public boolean debugMode = false;
   public boolean useUUID = true;
   public String consoleName = "Server Name";
@@ -90,6 +91,10 @@ public class TNELib extends JavaPlugin {
 
   public void setUuidManager(UUIDManager manager) {
     this.uuidManager = manager;
+  }
+
+  public static String getDBName() {
+    return instance().dbName;
   }
 
   public static void debug(String message) {
