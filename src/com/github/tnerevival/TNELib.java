@@ -40,15 +40,13 @@ public class TNELib extends JavaPlugin {
   private SaveManager saveManager;
   private UUIDManager uuidManager;
 
-
-
   public SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss.S");
   public static final Pattern uuidCreator = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
 
   /*
    * DataProvider settings
    */
-  protected String dbName = "TNELib";
+  protected boolean datasource = false;
   public boolean debugMode = false;
   public boolean useUUID = true;
   public String consoleName = "Server Name";
@@ -93,8 +91,8 @@ public class TNELib extends JavaPlugin {
     this.uuidManager = manager;
   }
 
-  public static String getDBName() {
-    return instance().dbName;
+  public static boolean useDataSource() {
+    return instance().datasource;
   }
 
   public static void debug(String message) {

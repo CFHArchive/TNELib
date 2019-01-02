@@ -3,6 +3,9 @@ package com.github.tnerevival.core.db.sql;
 import com.github.tnerevival.core.DataManager;
 import com.github.tnerevival.core.db.SQLDatabase;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 
  * @author Daniel Vidmar aka creatorfromhell
@@ -33,5 +36,19 @@ public class MySQL extends SQLDatabase {
   public String getURL(String file, String host, int port, String database) {
     return "jdbc:mysql://" + host + ":" + port + "/" +
         database;
+  }
+
+  @Override
+  public Map<String, Object> hikariProperties() {
+    Map<String, Object> properties = new HashMap<>();
+    properties.put("autoReconnect", true);
+    properties.put("cachePrepStmts", true);
+    properties.put("prepStmtCacheSize", 250);
+    properties.put("prepStmtCacheSqlLimit", 2048);
+    properties.put("rewriteBatchedStatements", true);
+    properties.put("useServerPrepStmts", true);
+    properties.put("cacheResultSetMetadata", true);
+    properties.put("useSSL", false);
+    return properties;
   }
 }

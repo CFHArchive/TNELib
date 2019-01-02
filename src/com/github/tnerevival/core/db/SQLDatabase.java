@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Map;
 
 public abstract class SQLDatabase implements DatabaseConnector {
   protected DataManager manager;
@@ -26,7 +27,7 @@ public abstract class SQLDatabase implements DatabaseConnector {
     config = new HikariConfig();
 
     try {
-      if(manager.getProviders().get(manager.getFormat()).connector().dataSource()) {
+      if(TNELib.useDataSource() && manager.getProviders().get(manager.getFormat()).connector().dataSource()) {
         config.setDataSourceClassName(manager.getProviders().get(manager.getFormat()).connector().dataSourceURL());
       } else {
         config.setDriverClassName(manager.getProviders().get(manager.getFormat()).connector().getDriver());
@@ -39,17 +40,14 @@ public abstract class SQLDatabase implements DatabaseConnector {
     config.setUsername(manager.getUser());
     config.setPassword(manager.getPassword());
 
-    config.setMaximumPoolSize(10);
+    config.setMaximumPoolSize(15);
     config.setConnectionTimeout(30000);
     config.setMinimumIdle(2);
-    config.addDataSourceProperty("autoReconnect", true);
-    config.addDataSourceProperty("cachePrepStmts", true);
-    config.addDataSourceProperty("prepStmtCacheSize", 250);
-    config.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);
-    config.addDataSourceProperty("rewriteBatchedStatements", true);
-    config.addDataSourceProperty("useServerPrepStmts", true);
-    config.addDataSourceProperty("cacheResultSetMetadata", true);
-    config.addDataSourceProperty("useSSL", false);
+    //config.setLeakDetectionThreshold(30000);
+
+    for(Map.Entry<String, Object> entry : hikariProperties().entrySet()) {
+      config.addDataSourceProperty(entry.getKey(), entry.getValue());
+    }
 
     dataSource = new HikariDataSource(config);
   }
@@ -85,32 +83,17 @@ public abstract class SQLDatabase implements DatabaseConnector {
   }
 
   public void executeUpdate(String query) {
-    Connection con = null;
-    Statement statement = null;
-    try {
-      con = dataSource.getConnection();
-      statement = con.createStatement();
+    try(Connection con = dataSource.getConnection();
+        Statement statement = con.createStatement()) {
       statement.executeUpdate(query);
-      statement.close();
-      con.close();
     } catch (SQLException e) {
       TNELib.debug(e);
-    } finally {
-      try {
-        if(statement != null) statement.close();
-        if(con != null) con.close();
-      } catch(SQLException e) {
-        e.printStackTrace();
-      }
     }
   }
 
   public void executePreparedUpdate(String query, Object[] variables) {
-    Connection con = null;
-    PreparedStatement statement = null;
-    try {
-      con = dataSource.getConnection();
-      statement =  con.prepareStatement(query);
+    try(Connection con = dataSource.getConnection();
+        PreparedStatement statement = con.prepareStatement(query)) {
 
       for(int i = 0; i < variables.length; i++) {
         statement.setObject((i + 1), variables[i]);
@@ -118,13 +101,6 @@ public abstract class SQLDatabase implements DatabaseConnector {
       statement.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
-    } finally {
-      try {
-        if(statement != null) statement.close();
-        if(con != null) con.close();
-      } catch(SQLException e) {
-        e.printStackTrace();
-      }
     }
   }
 
