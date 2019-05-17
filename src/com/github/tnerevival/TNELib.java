@@ -50,6 +50,7 @@ public class TNELib extends JavaPlugin {
   public boolean debugMode = false;
   public boolean useUUID = true;
   public String consoleName = "Server Name";
+  protected String poolName = "TNE_ConnectionPool";
 
 
   public Double currentSaveVersion = 0.0;
@@ -111,5 +112,9 @@ public class TNELib extends JavaPlugin {
     if(TNELib.instance().debugMode) {
       e.printStackTrace();
     }
+  }
+
+  public String poolName() {
+    return poolName;
   }
 }

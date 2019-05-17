@@ -4,7 +4,9 @@ import com.github.tnerevival.TNELib;
 import com.github.tnerevival.core.DataManager;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.javalite.activejdbc.DB;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,9 +15,11 @@ import java.sql.Statement;
 import java.util.Map;
 
 public abstract class SQLDatabase implements DatabaseConnector {
+  private static DB db;
   protected DataManager manager;
-  private HikariConfig config;
-  private HikariDataSource dataSource;
+  private static HikariConfig config;
+  private static HikariDataSource dataSource;
+  private static boolean initialized = false;
 
   public SQLDatabase(DataManager manager) {
     this.manager = manager;
@@ -23,54 +27,67 @@ public abstract class SQLDatabase implements DatabaseConnector {
 
   @Override
   public void initialize(DataManager manager) {
+    db = new DB("TNE");
 
-    config = new HikariConfig();
+    initialized = true;
+    if(initialized) {
+      config = new HikariConfig();
 
-    try {
-      if(TNELib.useDataSource() && manager.getProviders().get(manager.getFormat()).connector().dataSource()) {
-        config.setDataSourceClassName(manager.getProviders().get(manager.getFormat()).connector().dataSourceURL());
-      } else {
-        config.setDriverClassName(manager.getProviders().get(manager.getFormat()).connector().getDriver());
-        config.setJdbcUrl(manager.getProviders().get(manager.getFormat()).connector().getURL(manager.getFile(), manager.getHost(), manager.getPort(), manager.getDatabase()));
+      try {
+        if(TNELib.useDataSource() && manager.getProviders().get(manager.getFormat()).connector().dataSource()) {
+          config.setDataSourceClassName(manager.getProviders().get(manager.getFormat()).connector().dataSourceURL());
+        } else {
+          config.setDriverClassName(manager.getProviders().get(manager.getFormat()).connector().getDriver());
+          config.setJdbcUrl(manager.getProviders().get(manager.getFormat()).connector().getURL(manager.getFile(), manager.getHost(), manager.getPort(), manager.getDatabase()));
+        }
+      } catch(SQLException e) {
+        e.printStackTrace();
       }
-    } catch(SQLException e) {
-      e.printStackTrace();
+
+      config.setUsername(manager.getUser());
+      config.setPassword(manager.getPassword());
+
+      for(Map.Entry<String, Object> entry : hikariProperties().entrySet()) {
+        config.addDataSourceProperty(entry.getKey(), entry.getValue());
+      }
+
+      dataSource = new HikariDataSource(config);
     }
+  }
 
-    config.setUsername(manager.getUser());
-    config.setPassword(manager.getPassword());
+  public static DB getDb() {
+    return db;
+  }
 
-    config.setMaximumPoolSize(15);
-    config.setConnectionTimeout(30000);
-    config.setMinimumIdle(2);
-    //config.setLeakDetectionThreshold(30000);
+  public static void open() {
+    db.open(dataSource);
+  }
 
-    for(Map.Entry<String, Object> entry : hikariProperties().entrySet()) {
-      config.addDataSourceProperty(entry.getKey(), entry.getValue());
-    }
+  public static void close() {
+    db.close();
+  }
 
-    dataSource = new HikariDataSource(config);
+  public static void open(DataSource datasource) {
+    db.open(datasource);
   }
 
   public Boolean connected(DataManager manager) {
     return true;
   }
 
-  public Connection connection(DataManager manager) throws SQLException {
-    return dataSource.getConnection();
+  public static Connection connection(DataManager manager) throws SQLException {
+    return db.open(dataSource).getConnection();
   }
 
-  public ResultSet executeQuery(Statement statement, String query) {
-    ResultSet results = null;
-    try {
-      results = statement.executeQuery(query);
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return results;
+  public static ResultSet executeQuery(Statement statement, String query) {
+    try(ResultSet results = db.getConnection().createStatement().executeQuery(query)) {
+      return results;
+    } catch(SQLException ignore) {}
+
+    return null;
   }
 
-  public ResultSet executePreparedQuery(PreparedStatement statement, Object[] variables) {
+  public static ResultSet executePreparedQuery(PreparedStatement statement, Object[] variables) {
     try {
       for(int i = 0; i < variables.length; i++) {
         statement.setObject((i + 1), variables[i]);
@@ -82,18 +99,17 @@ public abstract class SQLDatabase implements DatabaseConnector {
     return null;
   }
 
-  public void executeUpdate(String query) {
-    try(Connection con = dataSource.getConnection();
-        Statement statement = con.createStatement()) {
-      statement.executeUpdate(query);
-    } catch (SQLException e) {
-      TNELib.debug(e);
-    }
+  public static void executeUpdate(String query) {
+    db.open(dataSource);
+    try {
+      db.getConnection().createStatement().executeUpdate(query);
+    } catch (SQLException ignore) {}
+    db.close();
   }
 
-  public void executePreparedUpdate(String query, Object[] variables) {
-    try(Connection con = dataSource.getConnection();
-        PreparedStatement statement = con.prepareStatement(query)) {
+  public static void executePreparedUpdate(String query, Object[] variables) {
+    db.open(dataSource);
+    try(PreparedStatement statement = db.getConnection().prepareStatement(query)) {
 
       for(int i = 0; i < variables.length; i++) {
         statement.setObject((i + 1), variables[i]);
@@ -102,9 +118,10 @@ public abstract class SQLDatabase implements DatabaseConnector {
     } catch (SQLException e) {
       e.printStackTrace();
     }
+    db.close();
   }
 
-  public void close(Connection connection, Statement statement, ResultSet results) {
+  public static void close(Connection connection, Statement statement, ResultSet results) {
     if(results != null) {
       try {
         results.close();
@@ -130,7 +147,7 @@ public abstract class SQLDatabase implements DatabaseConnector {
     }
   }
 
-  public HikariDataSource getDataSource() {
+  public static HikariDataSource getDataSource() {
     return dataSource;
   }
 

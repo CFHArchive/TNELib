@@ -48,6 +48,7 @@ public class MySQL extends SQLDatabase {
     properties.put("rewriteBatchedStatements", true);
     properties.put("useServerPrepStmts", true);
     properties.put("cacheResultSetMetadata", true);
+    properties.put("cacheServerConfiguration", true);
     properties.put("useSSL", false);
     return properties;
   }
