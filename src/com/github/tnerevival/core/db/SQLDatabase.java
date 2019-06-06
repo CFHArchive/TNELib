@@ -60,14 +60,17 @@ public abstract class SQLDatabase implements DatabaseConnector {
   }
 
   public static void open() {
+    if(db.hasConnection()) return;
     db.open(dataSource);
   }
 
   public static void close() {
+    if(!db.hasConnection()) return;
     db.close();
   }
 
   public static void open(DataSource datasource) {
+    if(db.hasConnection()) return;
     db.open(datasource);
   }
 
