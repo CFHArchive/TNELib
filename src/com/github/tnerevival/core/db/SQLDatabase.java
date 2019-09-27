@@ -60,12 +60,19 @@ public abstract class SQLDatabase implements DatabaseConnector {
   }
 
   public static void open() {
+    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+    StackTraceElement element = stackTrace[2];
+    TNELib.debug("SQLDatabase.open called by: [" + "Class: " + element.getClassName() + " via Method: " + element.getMethodName() + " at Line: " + element.getLineNumber());
     if(db.hasConnection()) return;
+    TNELib.debug("Connection doesn't exist, opening now");
     db.open(dataSource);
   }
 
   public static void close() {
     if(!db.hasConnection()) return;
+    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+    StackTraceElement element = stackTrace[2];
+    TNELib.debug("SQLDatabase.close called by: [" + "Class: " + element.getClassName() + " via Method: " + element.getMethodName() + " at Line: " + element.getLineNumber());
     db.close();
   }
 

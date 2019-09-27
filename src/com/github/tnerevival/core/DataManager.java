@@ -39,6 +39,7 @@ public class DataManager {
   protected boolean cacheData = false;
   protected Integer update = 600;
   protected boolean compress = true;
+  protected boolean ssl = false;
 
   public DataManager(String format, String host, Integer port, String database, String user, String password, String prefix, String file, boolean directSave, boolean cacheData, Integer update, boolean compress) {
     this.format = format;
@@ -123,6 +124,14 @@ public class DataManager {
 
   public boolean isCompress() {
     return compress;
+  }
+
+  public boolean isSsl() {
+    return ssl;
+  }
+
+  public void setSsl(boolean ssl) {
+    this.ssl = ssl;
   }
 
   public DataProvider getDb() {

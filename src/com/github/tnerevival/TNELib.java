@@ -18,7 +18,6 @@ package com.github.tnerevival;
 
 import com.github.tnerevival.core.SaveManager;
 import com.github.tnerevival.core.UUIDManager;
-import com.github.tnerevival.core.configuration.ConfigurationMapper;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -40,7 +39,6 @@ public class TNELib extends JavaPlugin {
   protected static TNELib instance;
   private SaveManager saveManager;
   private UUIDManager uuidManager;
-  private ConfigurationMapper mapper;
 
   public SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss.S");
   public static final Pattern uuidCreator = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
@@ -67,7 +65,6 @@ public class TNELib extends JavaPlugin {
   public void onEnable() {
     instance = this;
 
-    mapper = new ConfigurationMapper();
 
     if(Bukkit.getWorlds().size() >= 1) {
       defaultWorld = Bukkit.getServer().getWorlds().get(0).getName();
@@ -78,10 +75,6 @@ public class TNELib extends JavaPlugin {
 
   public static TNELib instance() {
     return instance;
-  }
-
-  public static ConfigurationMapper mapper() {
-    return instance.mapper;
   }
 
   public SaveManager getSaveManager() {

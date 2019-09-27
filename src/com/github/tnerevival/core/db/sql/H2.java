@@ -26,6 +26,6 @@ public class H2 extends SQLDatabase {
 
   @Override
   public String getURL(String file, String host, int port, String database) {
-    return "jdbc:h2:" + file + ";mode=MySQL";
+    return "jdbc:h2:" + file + ";mode=MySQL;DB_CLOSE_ON_EXIT=TRUE;FILE_LOCK=NO";
   }
 }
