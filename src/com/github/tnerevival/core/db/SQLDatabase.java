@@ -45,7 +45,10 @@ public abstract class SQLDatabase implements DatabaseConnector {
       }
 
       config.setUsername(manager.getUser());
-      config.setPassword(manager.getPassword());
+
+      if(!manager.getPassword().equalsIgnoreCase("")) {
+        config.setPassword(manager.getPassword());
+      }
 
       for(Map.Entry<String, Object> entry : hikariProperties().entrySet()) {
         config.addDataSourceProperty(entry.getKey(), entry.getValue());
