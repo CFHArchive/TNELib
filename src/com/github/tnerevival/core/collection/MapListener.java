@@ -32,7 +32,7 @@ public interface MapListener<K, V> {
   Set<Map.Entry<K, V>> entrySet();
   void remove(Object key);
   default Map<K, V> map() {
-    Map<K, V> m = new HashMap<K, V>();
+    Map<K, V> m = new HashMap<>();
     entrySet().forEach((entry)->m.put(entry.getKey(), entry.getValue()));
 
     return m;

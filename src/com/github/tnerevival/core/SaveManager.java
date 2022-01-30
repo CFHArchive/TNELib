@@ -12,11 +12,9 @@ import java.util.LinkedList;
  **/
 public class SaveManager {
 
-  protected LinkedList<Double> versions = new LinkedList<>();
-
   protected DataManager manager;
+  protected LinkedList<Double> versions = new LinkedList<>();
   protected Double saveVersion = 0.0;
-  protected File file;
 
   public SaveManager(DataManager manager) {
     this.manager = manager;
